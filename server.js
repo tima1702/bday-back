@@ -1,13 +1,14 @@
 const express = require('express');
+const { sequelize } = require('./models');
+
 const app = express();
-const sequelize = require('./models').sequelize;
 
 sequelize
   .authenticate()
   .then(() => {
     console.log('..........SUCCESS_CONNECTION');
   })
-  .catch(error => {
+  .catch((error) => {
     console.log('..........', error);
   });
 
@@ -17,6 +18,6 @@ const port = process.env.PORT || 3001;
 
 app.use(require('./routes'));
 
-app.listen(port, function () {
+app.listen(port, () => {
   console.log(`App listen on ${port}!`);
 });

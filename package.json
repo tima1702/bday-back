@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "start:dev": "node-dev server.js"
+    "start:dev": "node-dev server.js",
+    "prettier": "prettier --write **/**.js"
   },
   "author": "",
   "license": "MIT",
@@ -18,7 +19,11 @@
     "sequelize": "^5.21.3"
   },
   "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.1",
     "node-dev": "^4.0.0",
+    "prettier": "^1.19.1",
     "sequelize-cli": "^5.5.1"
   }
 }
