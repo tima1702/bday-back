@@ -1,5 +1,3 @@
-require('dotenv');
-
 module.exports = {
   'development': {
     'username': process.env.POSTGRES_USER,
