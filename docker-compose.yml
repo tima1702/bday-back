@@ -15,6 +15,7 @@ services:
       - db
   db:
     image: postgres:12.1
+    container_name: bday-db
     ports:
       - 5432:5432
     volumes:
