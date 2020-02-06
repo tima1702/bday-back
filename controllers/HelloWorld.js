@@ -1,10 +1,10 @@
-const FakeModel = require('../FakeModel');
+const { Bday } = require('../models');
 const statusCodes = require('../util/statusCodes');
 
 class HelloWorld {
   async getHello(req, res) {
-    const message = await FakeModel.getHello();
-    res.status(statusCodes.SUCCESS).json({ data: { message } });
+    const data = await Bday.findAndCountAll();
+    res.status(statusCodes.SUCCESS).json({ data });
   }
 }
 

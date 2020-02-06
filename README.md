@@ -16,3 +16,8 @@ docker-compose up --build
 ```shell script
 npm run prettier
 ```
+
+Для запуска миграций надо использовать команду:
+```shell script
+docker exec -it bday-back npm run db:migrate
+```
