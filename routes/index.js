@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const HelloWorld = require('../controllers/HelloWorld');
+const bdays = require('./bdays');
 
-router.get('/', HelloWorld.getHello);
+router.use('/bdays', bdays);
 
 module.exports = router;

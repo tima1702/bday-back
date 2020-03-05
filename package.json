@@ -13,6 +13,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@hapi/joi": "^17.1.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "pg": "^7.18.1",
