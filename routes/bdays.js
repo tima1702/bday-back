@@ -15,7 +15,13 @@ const body = Joi.object({
     .max(15)
     .required(),
   data: Joi.object(),
-  date: Joi.date().timestamp('unix'),
+  date: Joi.number()
+    .required()
+    .strict()
+    .$.integer()
+    .min(0)
+    .max(2147483648)
+    .rule({ message: '"{{#label}}" must be a valid unix timestamp' }),
 });
 
 router.get('/', BdayController.getAll);
