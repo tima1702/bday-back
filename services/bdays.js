@@ -1,5 +1,8 @@
-const BdayModel = require('../models').Bday;
+const models = require('../models');
 const dateUtil = require('../util/date');
+var sql = require('../sql');
+
+const BdayModel = models.Bday;
 
 async function create(firstName, lastName, date, data) {
   try {
@@ -23,22 +26,35 @@ async function create(firstName, lastName, date, data) {
   }
 }
 
+const monthNames = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
 async function getAll() {
-  return {
-    January: [],
-    February: [
-      {
-        fullName: 'Тимофей Кузнеов',
-        day: 17,
-        data: {
-          // any from json
-        },
-      },
-    ],
-    March: [],
-    April: [],
-    May: [],
-  };
+  try {
+    const months = await models.sequelize.query(sql.getListBdays, { type: models.Sequelize.QueryTypes.SELECT });
+
+    const newMonths = {};
+
+    months.forEach((item, i) => {
+      newMonths[monthNames[i]] = item.month ? item.month : [];
+    });
+
+    return newMonths;
+  } catch (e) {
+    return new Error('error get list');
+  }
 }
 
 module.exports = {

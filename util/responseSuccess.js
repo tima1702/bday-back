@@ -24,4 +24,14 @@ function created(data) {
   return { status: statusCodes.CREATED, body: buildbody(data) };
 }
 
-module.exports = { created };
+/**
+ * Success query
+ *
+ * @param {Object} data
+ * @returns
+ */
+function query(data) {
+  return { status: statusCodes.SUCCESS, body: buildbody(data) };
+}
+
+module.exports = { created, query };

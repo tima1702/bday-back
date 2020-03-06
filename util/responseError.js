@@ -26,6 +26,11 @@ const errorList = {
     code: 5,
     message: 'Error create',
   },
+  query: {
+    status: statusCodes.SERVER_ERROR,
+    code: 6,
+    message: 'Error query',
+  },
 };
 
 /**
@@ -127,4 +132,20 @@ function create(data = {}) {
   };
 }
 
-module.exports = { bodyValidation, queryValidation, paramsValidation, save, create };
+/**
+ * Error query
+ *
+ * @param {Object} [data={}]
+ * @returns
+ */
+function query(data = {}) {
+  const error = errorList.create;
+  return {
+    status: error.status,
+    body: {
+      err: buildbody(error, data),
+    },
+  };
+}
+
+module.exports = { bodyValidation, queryValidation, paramsValidation, save, create, query };
