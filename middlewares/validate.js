@@ -32,7 +32,7 @@ function params(schema) {
   return function validateParams(req, res, next) {
     const { error } = schema.validate(req.params);
 
-    if (schema.validate(req.params)) {
+    if (error) {
       const response = responseError.paramsValidation({ details: error.details.map((item) => item.message) });
       res.status(response.status).json(response.body);
       return;

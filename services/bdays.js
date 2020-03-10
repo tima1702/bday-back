@@ -66,8 +66,35 @@ async function deleteRecord(recordId) {
   }
 }
 
+async function updateRecord(recordId, firstName, lastName, date, data) {
+  try {
+    const record = await BdayModel.findOne({ where: { id: recordId } });
+
+    const updatedRecord = await record.update({
+      firstName,
+      lastName,
+      data,
+      date: date * 1000,
+    });
+
+    if (!record) throw new Error('record not found');
+
+    return {
+      id: updatedRecord.dataValues.id,
+      firstName: updatedRecord.dataValues.firstName,
+      lastName: updatedRecord.dataValues.lastName,
+      date: updatedRecord.dataValues.date,
+      data: updatedRecord.dataValues.data,
+      month: dateUtil.getMonthName(date),
+    };
+  } catch (e) {
+    throw new Error('error update');
+  }
+}
+
 module.exports = {
   create,
   getAll,
   deleteRecord,
+  updateRecord,
 };

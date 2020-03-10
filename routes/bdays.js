@@ -22,8 +22,8 @@ const body = Joi.object({
     .rule({ message: '"{{#label}}" must be a valid unix timestamp' }),
 });
 
-const bodyDelete = Joi.object({
-  recordId: Joi.number()
+const id = Joi.object({
+  id: Joi.number()
     .integer()
     .rule({ message: '"{{#label}}" must be a valid firstName' })
     .required(),
@@ -31,6 +31,7 @@ const bodyDelete = Joi.object({
 
 router.get('/', BdayController.getAll);
 router.post('/', validate.body(body), BdayController.create);
-router.delete('/', validate.body(bodyDelete), BdayController.deleteRecord);
+router.delete('/:id', validate.params(id), BdayController.deleteRecord);
+router.put('/:id', validate.params(id), validate.body(body), BdayController.updateRecord);
 
 module.exports = router;

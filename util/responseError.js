@@ -36,6 +36,11 @@ const errorList = {
     code: 7,
     message: 'Error delete',
   },
+  updateRecord: {
+    status: statusCodes.SERVER_ERROR,
+    code: 8,
+    message: 'Error update',
+  },
 };
 
 /**
@@ -169,4 +174,20 @@ function deleteRecord(data = {}) {
   };
 }
 
-module.exports = { bodyValidation, queryValidation, paramsValidation, save, create, query, deleteRecord };
+/**
+ * Error update
+ *
+ * @param {Object} [data={}]
+ * @returns
+ */
+function updateRecord(data = {}) {
+  const error = errorList.updateRecord;
+  return {
+    status: error.status,
+    body: {
+      err: buildbody(error, data),
+    },
+  };
+}
+
+module.exports = { bodyValidation, queryValidation, paramsValidation, save, create, query, deleteRecord, updateRecord };

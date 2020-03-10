@@ -20,14 +20,34 @@ class Bdays {
 
   async deleteRecord(req, res) {
     try {
-      const { recordId } = req.body;
-      const data = await BdaysService.deleteRecord(recordId);
+      const { id } = req.params;
+      const data = await BdaysService.deleteRecord(id);
 
       const response = responseSuccess.deleteRecord(data);
 
       res.status(response.status).send(response.body);
     } catch (e) {
       const response = responseError.deleteRecord();
+      res.status(response.status).json(response.body);
+    }
+  }
+
+  async updateRecord(req, res) {
+    try {
+      const { id } = req.params;
+      const { firstName, lastName, date, data } = req.body;
+      const row = await BdaysService.updateRecord(
+        id,
+        text.firstLetterUpperCase(firstName),
+        text.firstLetterUpperCase(lastName),
+        date,
+        data,
+      );
+
+      const response = responseSuccess.updateRecord(row);
+      res.status(response.status).send(response.body);
+    } catch (e) {
+      const response = responseError.updateRecord();
       res.status(response.status).json(response.body);
     }
   }
