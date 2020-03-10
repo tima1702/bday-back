@@ -1,6 +1,7 @@
 const responseError = require('../util/responseError');
 const responseSuccess = require('../util/responseSuccess');
 const dateUtil = require('../util/date');
+const text = require('../util/text');
 const BdaysService = require('../services/bdays');
 
 class Bdays {
@@ -17,11 +18,29 @@ class Bdays {
     }
   }
 
-  async create(req, res) {
-    const { firstName, lastName, date, data } = req.body;
-
+  async deleteRecord(req, res) {
     try {
-      const row = await BdaysService.create(firstName, lastName, date, data);
+      const { recordId } = req.body;
+      const data = await BdaysService.deleteRecord(recordId);
+
+      const response = responseSuccess.deleteRecord(data);
+
+      res.status(response.status).send(response.body);
+    } catch (e) {
+      const response = responseError.deleteRecord();
+      res.status(response.status).json(response.body);
+    }
+  }
+
+  async create(req, res) {
+    try {
+      const { firstName, lastName, date, data } = req.body;
+      const row = await BdaysService.create(
+        text.firstLetterUpperCase(firstName),
+        text.firstLetterUpperCase(lastName),
+        date,
+        data,
+      );
       const reponseData = { ...row, day: dateUtil.utcToDay(row.date) };
       delete reponseData.date;
 

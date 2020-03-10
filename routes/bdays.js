@@ -5,14 +5,12 @@ const BdayController = require('../controllers/bdays');
 
 const body = Joi.object({
   firstName: Joi.string()
-    .alphanum()
-    .min(2)
-    .max(15)
+    .pattern(new RegExp('^[a-zA-Zа-яА-Я]{2,15}$'))
+    .rule({ message: '"{{#label}}" must be a valid firstName' })
     .required(),
   lastName: Joi.string()
-    .alphanum()
-    .min(2)
-    .max(15)
+    .pattern(new RegExp('^[a-zA-Zа-яА-Я]{2,15}$'))
+    .rule({ message: '"{{#label}}" must be a valid lastName' })
     .required(),
   data: Joi.object(),
   date: Joi.number()
@@ -24,7 +22,15 @@ const body = Joi.object({
     .rule({ message: '"{{#label}}" must be a valid unix timestamp' }),
 });
 
+const bodyDelete = Joi.object({
+  recordId: Joi.number()
+    .integer()
+    .rule({ message: '"{{#label}}" must be a valid firstName' })
+    .required(),
+});
+
 router.get('/', BdayController.getAll);
 router.post('/', validate.body(body), BdayController.create);
+router.delete('/', validate.body(bodyDelete), BdayController.deleteRecord);
 
 module.exports = router;

@@ -8,6 +8,8 @@ FROM
   FROM (
    SELECT
     "id",
+    "firstName",
+    "lastName",
     CONCAT("firstName", ' ', "lastName") AS "fullName",
     "data",
     extract(day FROM date) AS "day"

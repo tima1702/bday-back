@@ -34,4 +34,14 @@ function query(data) {
   return { status: statusCodes.SUCCESS, body: buildbody(data) };
 }
 
-module.exports = { created, query };
+/**
+ * Success delete
+ *
+ * @param {Object} data
+ * @returns
+ */
+function deleteRecord(data) {
+  return { status: statusCodes.SUCCESS, body: buildbody(data) };
+}
+
+module.exports = { created, query, deleteRecord };

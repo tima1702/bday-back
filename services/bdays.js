@@ -22,7 +22,7 @@ async function create(firstName, lastName, date, data) {
       month: dateUtil.getMonthName(date),
     };
   } catch (e) {
-    return new Error('error create');
+    throw new Error('error create');
   }
 }
 
@@ -53,11 +53,21 @@ async function getAll() {
 
     return newMonths;
   } catch (e) {
-    return new Error('error get list');
+    throw new Error('error get list');
+  }
+}
+
+async function deleteRecord(recordId) {
+  try {
+    const result = await BdayModel.destroy({ where: { id: recordId } });
+    if (result === 0) throw new Error('not modify');
+  } catch (e) {
+    throw new Error('error delete');
   }
 }
 
 module.exports = {
   create,
   getAll,
+  deleteRecord,
 };
