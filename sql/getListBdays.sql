@@ -18,6 +18,6 @@ FROM
    WHERE
     extract(month FROM date) = i
    ORDER BY
-    "day" ASC,
+    "day" ASC
    LIMIT 1000) t) t;
 

@@ -149,7 +149,7 @@ function create(data = {}) {
  * @returns
  */
 function query(data = {}) {
-  const error = errorList.create;
+  const error = errorList.query;
   return {
     status: error.status,
     body: {

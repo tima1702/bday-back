@@ -1,0 +1,237 @@
+More:
+  get:
+    tags:
+      - Bdays
+    summary: Получить список всех дней рождений по месяцам
+    responses:
+      400:
+        description: |
+          **Возвращаемые коды ошибок:** `6`
+        content:
+          application/json:
+            schema:
+              $ref: "errors.yaml#/Struct"
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - data
+              properties:
+                data:
+                  type: object
+                  required:
+                    - January
+                    - February
+                    - March
+                    - April
+                    - May
+                    - June
+                    - July
+                    - August
+                    - September
+                    - October
+                    - November
+                    - December
+                  properties:
+                    January:
+                      type: array
+                      items:
+                        $ref: "bdays.yaml#/QueryResponse"
+                    February:
+                      type: array
+                      items:
+                        $ref: "bdays.yaml#/QueryResponse"
+                    March:
+                      type: array
+                      items:
+                        $ref: "bdays.yaml#/QueryResponse"
+                    April:
+                      type: array
+                      items:
+                        $ref: "bdays.yaml#/QueryResponse"
+                    May:
+                      type: array
+                      items:
+                        $ref: "bdays.yaml#/QueryResponse"
+                    June:
+                      type: array
+                      items:
+                        $ref: "bdays.yaml#/QueryResponse"
+                    July:
+                      type: array
+                      items:
+                        $ref: "bdays.yaml#/QueryResponse"
+                    August:
+                      type: array
+                      items:
+                        $ref: "bdays.yaml#/QueryResponse"
+                    September:
+                      type: array
+                      items:
+                        $ref: "bdays.yaml#/QueryResponse"
+                    October:
+                      type: array
+                      items:
+                        $ref: "bdays.yaml#/QueryResponse"
+                    November:
+                      type: array
+                      items:
+                        $ref: "bdays.yaml#/QueryResponse"
+                    December:
+                      type: array
+                      items:
+                        $ref: "bdays.yaml#/QueryResponse"
+
+  post:
+    tags:
+      - Bdays
+    summary: Добавить новый день рождения
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "bdays.yaml#/CreateUpdateStructRequest"
+    responses:
+      400:
+        description: |
+          **Возвращаемые коды ошибок:** `1`, `5`
+        content:
+          application/json:
+            schema:
+              $ref: "errors.yaml#/Struct"
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: "bdays.yaml#/CreateUpdateStructResponse"
+
+One:
+  delete:
+    tags:
+      - Bdays
+    summary: Удалить день рождения
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Идентификатор записи
+    responses:
+      400:
+        description: |
+          **Возвращаемые коды ошибок:** `3`, `7`
+        content:
+          application/json:
+            schema:
+              $ref: "errors.yaml#/Struct"
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: "success.yaml#/Struct"
+
+  put:
+    tags:
+      - Bdays
+    summary: Обновить информацию о дне рождения
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Идентификатор записи
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "bdays.yaml#/CreateUpdateStructRequest"
+    responses:
+      400:
+        description: |
+          **Возвращаемые коды ошибок:** `1`, `3`, `8`
+        content:
+          application/json:
+            schema:
+              $ref: "errors.yaml#/Struct"
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: "bdays.yaml#/CreateUpdateStructResponse"
+
+CreateUpdateStructRequest:
+  type: object
+  required:
+    - firstName
+    - lastName
+    - data
+    - date
+  properties:
+    firstName:
+      type: string
+      description: |
+        min: **2** max: **15**
+    lastName:
+      type: string
+      description: |
+        min: **2** max: **15**
+    data:
+      type: object
+    date:
+      type: integer
+      description: unix timestamp
+
+CreateUpdateStructResponse:
+  type: object
+  required:
+    - data
+  properties:
+    data:
+      type: object
+      required:
+        - id
+        - firstName
+        - lastName
+        - data
+        - month
+        - day
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        data:
+          type: object
+        month:
+          type: string
+        day:
+          type: integer
+
+QueryResponse:
+  type: object
+  required:
+    - id
+    - firstName
+    - lastName
+    - fullName
+    - data
+    - day
+  properties:
+    id:
+      type: integer
+    firstName:
+      type: string
+    lastName:
+      type: string
+    fullName:
+      type: string
+    data:
+      type: object
+    day:
+      type: integer

@@ -1,0 +1,13 @@
+openapi: 3.0.0
+info:
+  title: "API"
+  version: "1.0.0"
+  description:
+    $ref: "errors.yaml#/Description"
+tags:
+  - name: Bdays
+paths:
+  "/bdays":
+    $ref: "bdays.yaml#/More"
+  "/bdays/{id}":
+    $ref: "bdays.yaml#/One"

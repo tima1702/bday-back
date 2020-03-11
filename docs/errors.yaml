@@ -1,0 +1,32 @@
+Struct:
+  type: object
+  required:
+    - code
+    - message
+    - data
+  properties:
+    code:
+      type: integer
+    message:
+      type: string
+    data:
+      type: object
+
+Description: |
+  ***Список ошибок:*** `{code}` - {message} **({status})**
+
+  `1` - Body validation error **(400)**
+
+  `2` - Query validation error **(400)**
+
+  `3` - Params validation error **(400)**
+
+  `4` - Error save **(500)**
+
+  `5` - Error create **(500)**
+
+  `6` - Error query **(500)**
+
+  `7` - Error delete **(500)**
+
+  `8` - Error update **(500)**
