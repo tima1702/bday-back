@@ -92,9 +92,18 @@ async function updateRecord(recordId, firstName, lastName, date, data) {
   }
 }
 
+async function getById(id, args = {}) {
+  try {
+    return await BdayModel.findOne({ where: { id }, ...args });
+  } catch (e) {
+    throw new Error('error query by id');
+  }
+}
+
 module.exports = {
   create,
   getAll,
   deleteRecord,
   updateRecord,
+  getById,
 };

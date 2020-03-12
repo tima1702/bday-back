@@ -30,3 +30,5 @@ Description: |
   `7` - Error delete **(500)**
 
   `8` - Error update **(500)**
+
+  `9` - Error timeout **(500)**

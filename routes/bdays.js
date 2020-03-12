@@ -25,7 +25,7 @@ const body = Joi.object({
 const id = Joi.object({
   id: Joi.number()
     .integer()
-    .rule({ message: '"{{#label}}" must be a valid firstName' })
+    .rule({ message: '"{{#label}}" must be a valid id' })
     .required(),
 });
 

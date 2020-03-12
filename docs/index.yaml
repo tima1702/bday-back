@@ -6,8 +6,13 @@ info:
     $ref: "errors.yaml#/Description"
 tags:
   - name: Bdays
+  - name: Templates
 paths:
   "/bdays":
     $ref: "bdays.yaml#/More"
   "/bdays/{id}":
     $ref: "bdays.yaml#/One"
+  "/templates":
+    $ref: "templates.yaml#/CreateTemplate"
+  "/templates/{templateId}/{bdayId}":
+    $ref: "templates.yaml#/PrepareTemplate"

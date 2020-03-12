@@ -41,6 +41,11 @@ const errorList = {
     code: 8,
     message: 'Error update',
   },
+  timeout: {
+    status: statusCodes.SERVER_ERROR,
+    code: 9,
+    message: 'Error timeout',
+  },
 };
 
 /**
@@ -190,4 +195,30 @@ function updateRecord(data = {}) {
   };
 }
 
-module.exports = { bodyValidation, queryValidation, paramsValidation, save, create, query, deleteRecord, updateRecord };
+/**
+ * Error timeout
+ *
+ * @param {Object} [data={}]
+ * @returns
+ */
+function timeout(data = {}) {
+  const error = errorList.timeout;
+  return {
+    status: error.status,
+    body: {
+      err: buildbody(error, data),
+    },
+  };
+}
+
+module.exports = {
+  bodyValidation,
+  queryValidation,
+  paramsValidation,
+  save,
+  create,
+  query,
+  deleteRecord,
+  updateRecord,
+  timeout,
+};

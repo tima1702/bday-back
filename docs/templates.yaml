@@ -1,0 +1,115 @@
+CreateTemplate:
+  post:
+    tags:
+      - Templates
+    summary: Создать новый шаблон
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "templates.yaml#/CreateUpdateStructRequest"
+    responses:
+      400:
+        description: |
+          **Возвращаемые коды ошибок:** `1`, `5`
+        content:
+          application/json:
+            schema:
+              $ref: "errors.yaml#/Struct"
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: "templates.yaml#/CreateUpdateStructResponse"
+
+PrepareTemplate:
+  get:
+    tags:
+      - Templates
+    summary: Получить шаблон сопоставленный с данными пользователя
+    parameters:
+      - in: path
+        name: templateId
+        schema:
+          type: integer
+        required: true
+        description: Идентификатор шаблона
+      - in: path
+        name: bdayId
+        schema:
+          type: integer
+        required: true
+        description: Идентификатор дня рождения пользователя
+    responses:
+      400:
+        description: |
+          **Возвращаемые коды ошибок:** `9`, `6`, `3`
+        content:
+          application/json:
+            schema:
+              $ref: "errors.yaml#/Struct"
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - data
+              properties:
+                data:
+                  type: object
+                  required:
+                    - title
+                    - text
+                    - blocks
+                    - attachments
+                  properties:
+                    title:
+                      type: string
+                    text:
+                      type: string
+                    blocks:
+                      type: array
+                    attachments:
+                      type: array
+
+CreateUpdateStructRequest:
+  type: object
+  required:
+    - title
+    - text
+    - blocks
+  properties:
+    title:
+      type: string
+    text:
+      type: string
+    blocks:
+      type: array
+    attachments:
+      type: array
+
+CreateUpdateStructResponse:
+  type: object
+  required:
+    - data
+  properties:
+    data:
+      type: object
+      required:
+        - id
+        - title
+        - text
+        - blocks
+        - attachments
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        text:
+          type: string
+        blocks:
+          type: array
+        attachments:
+          type: array
