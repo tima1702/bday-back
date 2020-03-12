@@ -10,7 +10,7 @@ const body = Joi.object({
   attachments: Joi.array(),
 });
 
-const getParams = Joi.object({
+const getParamsMatched = Joi.object({
   templateId: Joi.number()
     .integer()
     .rule({ message: '"{{#label}}" must be a valid templateId' })
@@ -22,8 +22,21 @@ const getParams = Joi.object({
     .required(),
 });
 
+const getParams = Joi.object({
+  templateId: Joi.number()
+    .integer()
+    .rule({ message: '"{{#label}}" must be a valid templateId' })
+    .required(),
+});
+
 router.post('/', validate.body(body), TemplateController.create);
 
-router.get('/:templateId/:bdayId', validate.params(getParams), TemplateController.get);
+router.get('/', TemplateController.getAll);
+
+router.get('/:templateId/:bdayId', validate.params(getParamsMatched), TemplateController.getMatched);
+
+router.put('/:templateId', validate.body(body), TemplateController.updateRecord);
+
+router.get('/:templateId', validate.params(getParams), TemplateController.get);
 
 module.exports = router;

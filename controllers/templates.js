@@ -75,7 +75,22 @@ class Templates {
     }
   }
 
-  async get(req, res) {
+  async updateRecord(req, res) {
+    try {
+      const { templateId } = req.params;
+      const { title, text, blocks, attachments } = req.body;
+      const row = await TemplatesService.updateRecord(templateId, title, text, blocks, attachments || []);
+
+      const response = responseSuccess.updateRecord(row);
+
+      res.status(response.status).json(response.body);
+    } catch (e) {
+      const response = responseError.updateRecord();
+      res.status(response.status).json(response.body);
+    }
+  }
+
+  async getMatched(req, res) {
     try {
       const { templateId, bdayId } = req.params;
 
@@ -101,6 +116,37 @@ class Templates {
         return;
       }
       const response = responseSuccess.query(template);
+
+      res.status(response.status).json(response.body);
+    } catch (e) {
+      const response = responseError.query();
+      res.status(response.status).json(response.body);
+    }
+  }
+
+  async get(req, res) {
+    try {
+      const { templateId } = req.params;
+      const row = await TemplatesService.getById(+templateId, {
+        attributes: ['title', 'text', 'blocks', 'attachments'],
+      });
+
+      const response = responseSuccess.query(row);
+
+      res.status(response.status).json(response.body);
+    } catch (e) {
+      const response = responseError.query();
+      res.status(response.status).json(response.body);
+    }
+  }
+
+  async getAll(req, res) {
+    try {
+      const row = await TemplatesService.getAll({
+        attributes: ['id', 'title'],
+      });
+
+      const response = responseSuccess.query(row);
 
       res.status(response.status).json(response.body);
     } catch (e) {

@@ -1,4 +1,76 @@
-CreateTemplate:
+GetOrUpdateOrDeleteTemplate:
+  get:
+    tags:
+      - Templates
+    summary: Получить шаблон
+    parameters:
+      - in: path
+        name: templateId
+        schema:
+          type: integer
+        required: true
+        description: Идентификатор шаблона
+    responses:
+      400:
+        description: |
+          **Возвращаемые коды ошибок:** `6`, `3`
+        content:
+          application/json:
+            schema:
+              $ref: "errors.yaml#/Struct"
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: "templates.yaml#/CreateUpdateOrGetStructResponse"
+  put:
+    tags:
+      - Templates
+    summary: Обновить шаблон
+    parameters:
+      - in: path
+        name: templateId
+        schema:
+          type: integer
+        required: true
+        description: Идентификатор шаблона
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "templates.yaml#/CreateUpdateStructRequest"
+    responses:
+      400:
+        description: |
+          **Возвращаемые коды ошибок:** `1`, `3`, `8`
+        content:
+          application/json:
+            schema:
+              $ref: "errors.yaml#/Struct"
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: "templates.yaml#/CreateUpdateOrGetStructResponse"
+
+CreateOrGetAllTemplate:
+  get:
+    tags:
+      - Templates
+    summary: Получить список шаблонов
+    responses:
+      400:
+        description: |
+          **Возвращаемые коды ошибок:** `6`
+        content:
+          application/json:
+            schema:
+              $ref: "errors.yaml#/Struct"
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: "templates.yaml#/GetAllStructResponse"
   post:
     tags:
       - Templates
@@ -20,13 +92,39 @@ CreateTemplate:
         content:
           application/json:
             schema:
-              $ref: "templates.yaml#/CreateUpdateStructResponse"
+              $ref: "templates.yaml#/CreateUpdateOrGetStructResponse"
 
 PrepareTemplate:
   get:
     tags:
       - Templates
     summary: Получить шаблон сопоставленный с данными пользователя
+    description: |
+      Необходимо добавить в текст ключ <!!{path}!!> который будет заменен на значение из данных пользователя, где path - путь к полю (Если поле по заданному пути не найдено, то ключ будет удален из текста)     
+
+      ***Пример:***
+
+      __Есть данные пользователя:
+
+      ```
+      {
+        "id": 1,
+        "firstName": "Firstname",
+        "lastName": "LastName",
+        "data": {
+          "age": 20
+        }
+      }
+      ```
+
+      __Есть текст:
+
+      Имя: <!!firstName!!> | Фамилия: <!!lastName!!> | Возраст: <!!data.age!!>
+
+      __В итоге будет получено:
+
+      Имя: Firstname | Фамилия: Lastname | Возраст: 20
+
     parameters:
       - in: path
         name: templateId
@@ -89,7 +187,7 @@ CreateUpdateStructRequest:
     attachments:
       type: array
 
-CreateUpdateStructResponse:
+CreateUpdateOrGetStructResponse:
   type: object
   required:
     - data
@@ -113,3 +211,21 @@ CreateUpdateStructResponse:
           type: array
         attachments:
           type: array
+
+GetAllStructResponse:
+  type: object
+  required:
+    - data
+  properties:
+    data:
+      type: array
+      items:
+        type: object
+        required:
+          - id
+          - title
+        properties:
+          id:
+            type: integer
+          title:
+            type: string

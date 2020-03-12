@@ -23,6 +23,31 @@ async function create(title, text, blocks, attachments) {
   }
 }
 
+async function updateRecord(recordId, title, text, blocks, attachments = []) {
+  try {
+    const record = await TemplateModel.findOne({ where: { id: recordId } });
+
+    const updatedRecord = await record.update({
+      title,
+      text,
+      blocks,
+      attachments: attachments && attachments.length ? attachments : record.attachments,
+    });
+
+    if (!record) throw new Error('record not found');
+
+    return {
+      id: updatedRecord.dataValues.id,
+      title: updatedRecord.dataValues.title,
+      text: updatedRecord.dataValues.text,
+      blocks: updatedRecord.dataValues.blocks,
+      attachments: updatedRecord.dataValues.attachments,
+    };
+  } catch (e) {
+    throw new Error('error update');
+  }
+}
+
 async function getById(id, args = {}) {
   try {
     return await TemplateModel.findOne({ where: { id }.id, ...args });
@@ -31,7 +56,17 @@ async function getById(id, args = {}) {
   }
 }
 
+async function getAll(args = {}) {
+  try {
+    return await TemplateModel.findAll({ ...args });
+  } catch (e) {
+    throw new Error('error query');
+  }
+}
+
 module.exports = {
   create,
   getById,
+  updateRecord,
+  getAll,
 };
