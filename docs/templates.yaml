@@ -1,4 +1,28 @@
 GetOrUpdateOrDeleteTemplate:
+  delete:
+    tags:
+      - Templates
+    summary: Удалить шаблон
+    parameters:
+      - in: path
+        name: templateId
+        schema:
+          type: integer
+        required: true
+        description: Идентификатор шаблона
+    responses:
+      400:
+        description: |
+          **Возвращаемые коды ошибок:** `3`, `7`
+        content:
+          application/json:
+            schema:
+              $ref: "errors.yaml#/Struct"
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: "success.yaml#/Struct"
   get:
     tags:
       - Templates
@@ -100,7 +124,7 @@ PrepareTemplate:
       - Templates
     summary: Получить шаблон сопоставленный с данными пользователя
     description: |
-      Необходимо добавить в текст ключ <!!{path}!!> который будет заменен на значение из данных пользователя, где path - путь к полю (Если поле по заданному пути не найдено, то ключ будет удален из текста)     
+      Необходимо добавить в текст ключ <!!{path}!!> который будет заменен на значение из данных пользователя, где path - путь к полю (Если поле по заданному пути не найдено, то ключ будет удален из текста)
 
       ***Пример:***
 

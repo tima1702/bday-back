@@ -35,7 +35,9 @@ router.get('/', TemplateController.getAll);
 
 router.get('/:templateId/:bdayId', validate.params(getParamsMatched), TemplateController.getMatched);
 
-router.put('/:templateId', validate.body(body), TemplateController.updateRecord);
+router.delete('/:templateId', validate.params(getParams), TemplateController.deleteRecord);
+
+router.put('/:templateId', validate.params(getParams), validate.body(body), TemplateController.updateRecord);
 
 router.get('/:templateId', validate.params(getParams), TemplateController.get);
 

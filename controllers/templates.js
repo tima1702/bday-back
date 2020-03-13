@@ -90,6 +90,20 @@ class Templates {
     }
   }
 
+  async deleteRecord(req, res) {
+    try {
+      const { templateId } = req.params;
+      const data = await TemplatesService.deleteRecord(templateId);
+
+      const response = responseSuccess.deleteRecord(data);
+
+      res.status(response.status).send(response.body);
+    } catch (e) {
+      const response = responseError.deleteRecord();
+      res.status(response.status).json(response.body);
+    }
+  }
+
   async getMatched(req, res) {
     try {
       const { templateId, bdayId } = req.params;

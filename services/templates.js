@@ -64,9 +64,19 @@ async function getAll(args = {}) {
   }
 }
 
+async function deleteRecord(recordId) {
+  try {
+    const result = await TemplateModel.destroy({ where: { id: recordId } });
+    if (result === 0) throw new Error('not modify');
+  } catch (e) {
+    throw new Error('error delete');
+  }
+}
+
 module.exports = {
   create,
   getById,
   updateRecord,
   getAll,
+  deleteRecord,
 };
