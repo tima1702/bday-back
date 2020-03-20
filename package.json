@@ -8,7 +8,8 @@
     "start": "node server.js",
     "start:dev": "node-dev server.js",
     "prettier": "prettier --write **/**.js",
-    "db:migrate": "sequelize-cli db:migrate"
+    "db:migrate": "sequelize-cli db:migrate",
+    "db:migrate:undo": "sequelize-cli db:migrate:undo"
   },
   "author": "",
   "license": "MIT",

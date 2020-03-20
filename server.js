@@ -1,5 +1,7 @@
 const express = require('express');
 const { sequelize } = require('./models');
+const watchers = require('./watchers');
+const sql = require('./sql');
 
 const app = express();
 
@@ -13,6 +15,9 @@ sequelize
   .catch((error) => {
     console.log('..........', error);
   });
+
+watchers.startAll();
+sql.procedure.createAllIfNotExists();
 
 require('dotenv');
 

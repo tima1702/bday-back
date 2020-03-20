@@ -1,4 +1,5 @@
 const fs = require('fs');
 const path = require('path');
+const procedure = require('./procedure');
 
-module.exports = { getListBdays: fs.readFileSync(path.resolve(__dirname, 'getListBdays.sql')).toString() };
+module.exports = { procedure, getListBdays: fs.readFileSync(path.resolve(__dirname, 'getListBdays.sql')).toString() };
