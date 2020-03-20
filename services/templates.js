@@ -1,6 +1,64 @@
 const models = require('../models');
+const BdaysService = require('./bdays');
+const deepFind = require('../util/deepFind');
 
 const TemplateModel = models.Template;
+
+const regexTemplateVariable = /(<!![\\._a-zA-Z]+!!>)/gm;
+
+function changeTemplateVariable(text, userData) {
+  let copy = text;
+  if (copy) {
+    const findItems = copy.match(regexTemplateVariable);
+
+    if (findItems && findItems.length) {
+      findItems.forEach((item) => {
+        const path = item.replace('<!!', '', -1).replace('!!>', '', -1);
+        copy = copy.replace(item, deepFind(userData, path) || '', -1).trim();
+      });
+    }
+  }
+  return copy;
+}
+
+function templateBlock(block, userData, timeStart, timeout) {
+  const newBlock = {};
+
+  Object.keys(block).some((item) => {
+    if (typeof block[item] === 'object') {
+      if (block[item].length) {
+        block[item].some((itemBlock) => {
+          const preparedBlock = templateBlock(itemBlock, userData, timeStart, timeout);
+
+          if (!newBlock[item]) newBlock[item] = [];
+
+          newBlock[item].push(preparedBlock.newBlock);
+
+          return preparedBlock.err;
+        });
+      } else {
+        const preparedBlock = templateBlock(block[item], userData, timeStart, timeout);
+        newBlock[item] = preparedBlock.newBlock;
+        return preparedBlock.err;
+      }
+
+      return false;
+    }
+
+    if (item === 'text' && typeof block[item] === 'string') {
+      newBlock[item] = changeTemplateVariable(block[item], userData);
+      return false;
+    }
+
+    newBlock[item] = block[item];
+    return false;
+  });
+
+  return {
+    newBlock,
+    err: new Date().getTime() - timeStart >= timeout ? new Error('timeout error') : null,
+  };
+}
 
 async function create(title, text, blocks, attachments) {
   try {
@@ -73,7 +131,40 @@ async function deleteRecord(recordId) {
   }
 }
 
+function getMatched(templateId, bdayId) {
+  return new Promise((resolve, reject) => {
+    Promise.all([
+      BdaysService.getById(+bdayId, { attributes: ['firstName', 'lastName', 'data', 'date'] }),
+      getById(+templateId, {
+        attributes: ['title', 'text', 'blocks', 'attachments'],
+      }),
+    ])
+      .then(([user, template]) => {
+        if (!user || !template) reject('query');
+
+        const newTemplate = { ...template.dataValues };
+
+        const copyTemplateBlocks = [...template.blocks];
+
+        newTemplate.blocks = [];
+        let err = null;
+        copyTemplateBlocks.some((block) => {
+          const preparedBlock = templateBlock(block, user, new Date().getTime(), 3000);
+          newTemplate.blocks.push(preparedBlock.newBlock);
+
+          if (preparedBlock.err) {
+            err = preparedBlock.err;
+          }
+        });
+        if (err) reject('timeout');
+        resolve(newTemplate);
+      })
+      .catch((e) => reject(e));
+  });
+}
+
 module.exports = {
+  getMatched,
   create,
   getById,
   updateRecord,

@@ -1,6 +1,7 @@
 const sql = require('../sql');
 const axios = require('axios');
 const { BdaySchedule, Bday } = require('../models');
+const TemplatesService = require('../services/templates');
 
 function checkTimeAndSendGreeting() {
   const run = () => {
@@ -9,20 +10,23 @@ function checkTimeAndSendGreeting() {
       BdaySchedule.findAll({ where: { isCongratulate: false } }).then((records) => {
         records.forEach((record) => {
           Bday.findOne({ where: { id: record.dataValues.bdayId } }).then((bday) => {
-            console.table(bday.dataValues);
-
-            if (bday.data && bday.data.templateId) {
-              axios
-                .post('https://bday.shibanet0.tech/system/message', {
-                  channel: 'UU534SR1Q',
-                  text: 'string',
-                  blocks: [],
-                })
-                .then(() => {
-                  record.update({
-                    isCongratulate: true,
-                  });
-                });
+            if (bday.data && bday.data.templateId && bday.data.targetChannelId) {
+              TemplatesService.getMatched(bday.data.templateId, record.dataValues.bdayId).then(({ text, blocks }) => {
+                if (text && blocks) {
+                  axios
+                    .post('https://bday.shibanet0.tech/system/message', {
+                      channel: bday.data.targetChannelId,
+                      text,
+                      blocks,
+                    })
+                    .then(() => {
+                      record.update({
+                        isCongratulate: true,
+                      });
+                    })
+                    .catch(() => console.error('ERROR Send message in slack bot!'));
+                }
+              });
             }
           });
         });
