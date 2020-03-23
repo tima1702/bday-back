@@ -15,7 +15,7 @@ const undefinedError = responseError.undefinedError();
 
 // eslint-disable-next-line
 async function checkError(err, req, res, next) {
-  if (errorMessages[err.message]) {
+  if (err && err.message && errorMessages[err.message]) {
     res.status(errorMessages[err.message].status).json(errorMessages[err.message].body);
     return;
   }
