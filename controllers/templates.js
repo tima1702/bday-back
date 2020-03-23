@@ -9,7 +9,6 @@ class Templates {
       const row = await TemplatesService.create(title, text, blocks, attachments || []);
 
       const response = responseSuccess.created(row);
-
       res.status(response.status).json(response.body);
     } catch (e) {
       const response = responseError.create();
@@ -24,7 +23,6 @@ class Templates {
       const row = await TemplatesService.updateRecord(templateId, title, text, blocks, attachments || []);
 
       const response = responseSuccess.updateRecord(row);
-
       res.status(response.status).json(response.body);
     } catch (e) {
       const response = responseError.updateRecord();
@@ -38,7 +36,6 @@ class Templates {
       const data = await TemplatesService.deleteRecord(templateId);
 
       const response = responseSuccess.deleteRecord(data);
-
       res.status(response.status).json(response.body);
     } catch (e) {
       const response = responseError.deleteRecord();
@@ -49,20 +46,17 @@ class Templates {
   async getMatched(req, res) {
     try {
       const { templateId, bdayId } = req.params;
-
       const template = await TemplatesService.getMatched(templateId, bdayId);
 
-      if (template === 'timeout') {
+      const response = responseSuccess.query(template);
+      res.status(response.status).json(response.body);
+    } catch (e) {
+      if (e.message === 'timeout') {
         const response = responseError.timeout();
         res.status(response.status).json(response.body);
         return;
-      } else if (template === 'query') {
-        throw template;
       }
-      const response = responseSuccess.query(template);
 
-      res.status(response.status).json(response.body);
-    } catch (e) {
       const response = responseError.query();
       res.status(response.status).json(response.body);
     }
@@ -76,7 +70,6 @@ class Templates {
       });
 
       const response = responseSuccess.query(row);
-
       res.status(response.status).json(response.body);
     } catch (e) {
       const response = responseError.query();
@@ -91,7 +84,6 @@ class Templates {
       });
 
       const response = responseSuccess.query(row);
-
       res.status(response.status).json(response.body);
     } catch (e) {
       const response = responseError.query();

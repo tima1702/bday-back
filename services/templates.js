@@ -22,42 +22,40 @@ function changeTemplateVariable(text, userData) {
 }
 
 function templateBlock(block, userData, timeStart, timeout) {
-  const newBlock = {};
+  if (new Date().getTime() - timeStart >= timeout) throw new Error('timeout');
 
-  Object.keys(block).some((item) => {
-    if (typeof block[item] === 'object') {
-      if (block[item].length) {
-        block[item].some((itemBlock) => {
-          const preparedBlock = templateBlock(itemBlock, userData, timeStart, timeout);
+  const modifiedBlock = {};
 
-          if (!newBlock[item]) newBlock[item] = [];
+  Object.keys(block).some((blockKey) => {
+    const itemInBlock = block[blockKey];
 
-          newBlock[item].push(preparedBlock.newBlock);
+    switch (typeof itemInBlock) {
+      case 'string':
+        if (blockKey === 'text') {
+          modifiedBlock[blockKey] = changeTemplateVariable(itemInBlock, userData);
+          return false;
+        }
+        modifiedBlock[blockKey] = itemInBlock;
+        return false;
 
-          return preparedBlock.err;
-        });
-      } else {
-        const preparedBlock = templateBlock(block[item], userData, timeStart, timeout);
-        newBlock[item] = preparedBlock.newBlock;
-        return preparedBlock.err;
-      }
+      case 'object':
+        if (Array.isArray(itemInBlock)) {
+          if (!modifiedBlock[blockKey] || !Array.isArray(modifiedBlock[blockKey])) modifiedBlock[blockKey] = [];
+          itemInBlock.some((nestedBlock) =>
+            modifiedBlock[blockKey].push(templateBlock(nestedBlock, userData, timeStart, timeout)),
+          );
+        } else {
+          modifiedBlock[blockKey] = templateBlock(itemInBlock, userData, timeStart, timeout);
+        }
+        return false;
 
-      return false;
+      default:
+        modifiedBlock[blockKey] = itemInBlock;
+        return false;
     }
-
-    if (item === 'text' && typeof block[item] === 'string') {
-      newBlock[item] = changeTemplateVariable(block[item], userData);
-      return false;
-    }
-
-    newBlock[item] = block[item];
-    return false;
   });
 
-  return {
-    newBlock,
-    err: new Date().getTime() - timeStart >= timeout ? new Error('timeout error') : null,
-  };
+  return modifiedBlock;
 }
 
 async function create(title, text, blocks, attachments) {
@@ -140,23 +138,11 @@ function getMatched(templateId, bdayId) {
       }),
     ])
       .then(([user, template]) => {
-        if (!user || !template) reject('query');
-
-        const newTemplate = { ...template.dataValues };
-
-        const copyTemplateBlocks = [...template.blocks];
-
-        newTemplate.blocks = [];
-        let err = null;
-        copyTemplateBlocks.some((block) => {
-          const preparedBlock = templateBlock(block, user, new Date().getTime(), 3000);
-          newTemplate.blocks.push(preparedBlock.newBlock);
-
-          if (preparedBlock.err) {
-            err = preparedBlock.err;
-          }
+        if (!user || !template) reject(new Error('query'));
+        const newTemplate = { ...template.dataValues, blocks: [] };
+        template.dataValues.blocks.some((block) => {
+          newTemplate.blocks.push(templateBlock(block, user, new Date().getTime(), 3000));
         });
-        if (err) reject('timeout');
         resolve(newTemplate);
       })
       .catch((e) => reject(e));
