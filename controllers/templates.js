@@ -39,7 +39,7 @@ class Templates {
 
       const response = responseSuccess.deleteRecord(data);
 
-      res.status(response.status).send(response.body);
+      res.status(response.status).json(response.body);
     } catch (e) {
       const response = responseError.deleteRecord();
       res.status(response.status).json(response.body);

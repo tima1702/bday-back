@@ -1,6 +1,6 @@
 const models = require('../models');
 const dateUtil = require('../util/date');
-var sql = require('../sql');
+const sql = require('../sql');
 
 const BdayModel = models.Bday;
 
