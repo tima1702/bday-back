@@ -27,32 +27,34 @@ function templateBlock(block, userData, timeStart, timeout) {
 
   const modifiedBlock = {};
 
-  Object.keys(block).some((blockKey) => {
+  Object.keys(block).forEach((blockKey) => {
     const itemInBlock = block[blockKey];
 
     switch (typeof itemInBlock) {
       case 'string':
         if (blockKey === 'text') {
           modifiedBlock[blockKey] = changeTemplateVariable(itemInBlock, userData || {});
-          return false;
+        } else {
+          modifiedBlock[blockKey] = itemInBlock;
         }
-        modifiedBlock[blockKey] = itemInBlock;
-        return false;
+        break;
 
       case 'object':
         if (Array.isArray(itemInBlock)) {
-          if (!modifiedBlock[blockKey] || !Array.isArray(modifiedBlock[blockKey])) modifiedBlock[blockKey] = [];
-          itemInBlock.some((nestedBlock) => {
+          if (!modifiedBlock[blockKey] || !Array.isArray(modifiedBlock[blockKey])) {
+            modifiedBlock[blockKey] = [];
+          }
+          itemInBlock.forEach((nestedBlock) => {
             modifiedBlock[blockKey].push(templateBlock(nestedBlock, userData, timeStart, timeout));
           });
         } else {
           modifiedBlock[blockKey] = templateBlock(itemInBlock, userData, timeStart, timeout);
         }
-        return false;
+        break;
 
       default:
         modifiedBlock[blockKey] = itemInBlock;
-        return false;
+        break;
     }
   });
 

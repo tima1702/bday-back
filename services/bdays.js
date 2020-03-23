@@ -60,7 +60,7 @@ async function getAll() {
 async function deleteRecord(recordId) {
   try {
     const result = await BdayModel.destroy({ where: { id: recordId } });
-    if (result === 0) throw new Error('not modify');
+    if (!result) throw new Error('not modify');
   } catch (e) {
     throw new Error('error delete');
   }
