@@ -1,5 +1,5 @@
-const sql = require('../sql');
 const axios = require('axios');
+const sql = require('../sql');
 const { BdaySchedule, Bday } = require('../models');
 const TemplatesService = require('../services/templates');
 
@@ -46,6 +46,7 @@ function checkBday() {
 }
 
 function startAll() {
+  // eslint-disable-next-line no-new
   new Promise(() => {
     checkBday();
     checkTimeAndSendGreeting();

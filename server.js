@@ -2,6 +2,7 @@ const express = require('express');
 const { sequelize } = require('./models');
 const watchers = require('./watchers');
 const sql = require('./sql');
+const wrapError = require('./middlewares/wrapError');
 
 const app = express();
 
@@ -24,6 +25,8 @@ require('dotenv');
 const port = process.env.PORT || 3001;
 
 app.use(require('./routes'));
+
+app.use(wrapError);
 
 app.listen(port, () => {
   console.log(`App listen on ${port}!`);

@@ -2,6 +2,7 @@ const models = require('../models');
 const BdaysService = require('./bdays');
 const deepFind = require('../util/deepFind');
 const date = require('../util/date');
+const customError = require('../util/customError');
 
 const TemplateModel = models.Template;
 
@@ -23,7 +24,7 @@ function changeTemplateVariable(text, userData) {
 }
 
 function templateBlock(block, userData, timeStart, timeout) {
-  if (date.getTime() - timeStart >= timeout) throw new Error('timeout');
+  if (date.getTime() - timeStart >= timeout) throw customError.timeout();
 
   const modifiedBlock = {};
 
@@ -78,7 +79,7 @@ async function create(title, text, blocks, attachments) {
       attachments: result.attachments,
     };
   } catch (e) {
-    throw new Error('error create');
+    throw customError.create();
   }
 }
 
@@ -93,7 +94,7 @@ async function updateRecord(recordId, title, text, blocks, attachments = []) {
       attachments: attachments && attachments.length ? attachments : record.attachments,
     });
 
-    if (!record) throw new Error('record not found');
+    if (!record) throw customError.notFound();
 
     return {
       id: updatedRecord.dataValues.id,
@@ -103,7 +104,7 @@ async function updateRecord(recordId, title, text, blocks, attachments = []) {
       attachments: updatedRecord.dataValues.attachments,
     };
   } catch (e) {
-    throw new Error('error update');
+    throw customError.update();
   }
 }
 
@@ -111,7 +112,7 @@ async function getById(id, args = {}) {
   try {
     return await TemplateModel.findOne({ where: { id }.id, ...args });
   } catch (e) {
-    throw new Error('error query by id');
+    throw customError.query();
   }
 }
 
@@ -119,16 +120,16 @@ async function getAll(args = {}) {
   try {
     return await TemplateModel.findAll({ ...args });
   } catch (e) {
-    throw new Error('error query');
+    throw customError.query();
   }
 }
 
 async function deleteRecord(recordId) {
   try {
     const result = await TemplateModel.destroy({ where: { id: recordId } });
-    if (result === 0) throw new Error('not modify');
+    if (result === 0) throw customError.notMofify();
   } catch (e) {
-    throw new Error('error delete');
+    throw customError.delete();
   }
 }
 
@@ -141,8 +142,9 @@ function getMatched(templateId, bdayId) {
       }),
     ])
       .then(([user, template]) => {
-        if (!user || !template) reject(new Error('query'));
+        if (!user || !template) reject(customError.query());
         const newTemplate = { ...template.dataValues, blocks: [] };
+        // eslint-disable-next-line array-callback-return
         template.dataValues.blocks.some((block) => {
           newTemplate.blocks.push(templateBlock(block, user, new Date().getTime(), 3000));
         });

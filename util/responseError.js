@@ -46,6 +46,21 @@ const errorList = {
     code: 9,
     message: 'Error timeout',
   },
+  notModify: {
+    status: statusCodes.SERVER_ERROR,
+    code: 10,
+    message: 'Not modify',
+  },
+  notFound: {
+    status: statusCodes.SERVER_ERROR,
+    code: 11,
+    message: 'Not found',
+  },
+  undefinedError: {
+    status: statusCodes.SERVER_ERROR,
+    code: 12,
+    message: 'Undefined error',
+  },
 };
 
 /**
@@ -211,6 +226,54 @@ function timeout(data = {}) {
   };
 }
 
+/**
+ * Not found
+ *
+ * @param {Object} [data={}]
+ * @returns
+ */
+function notFound(data = {}) {
+  const error = errorList.notFound;
+  return {
+    status: error.status,
+    body: {
+      err: buildbody(error, data),
+    },
+  };
+}
+
+/**
+ * Not modify
+ *
+ * @param {Object} [data={}]
+ * @returns
+ */
+function notModify(data = {}) {
+  const error = errorList.notModify;
+  return {
+    status: error.status,
+    body: {
+      err: buildbody(error, data),
+    },
+  };
+}
+
+/**
+ * Undefined error
+ *
+ * @param {Object} [data={}]
+ * @returns
+ */
+function undefinedError(data = {}) {
+  const error = errorList.notModify;
+  return {
+    status: error.status,
+    body: {
+      err: buildbody(error, data),
+    },
+  };
+}
+
 module.exports = {
   bodyValidation,
   queryValidation,
@@ -221,4 +284,7 @@ module.exports = {
   deleteRecord,
   updateRecord,
   timeout,
+  notFound,
+  notModify,
+  undefinedError,
 };

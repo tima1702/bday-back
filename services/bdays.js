@@ -1,5 +1,6 @@
 const models = require('../models');
 const dateUtil = require('../util/date');
+const customError = require('../util/customError');
 const sql = require('../sql');
 
 const BdayModel = models.Bday;
@@ -22,7 +23,7 @@ async function create(firstName, lastName, date, data) {
       month: dateUtil.getMonthName(date),
     };
   } catch (e) {
-    throw new Error('error create');
+    throw customError.create();
   }
 }
 
@@ -53,16 +54,16 @@ async function getAll() {
 
     return newMonths;
   } catch (e) {
-    throw new Error('error get list');
+    throw customError.query();
   }
 }
 
 async function deleteRecord(recordId) {
   try {
     const result = await BdayModel.destroy({ where: { id: recordId } });
-    if (!result) throw new Error('not modify');
+    if (!result) throw customError.notMofify();
   } catch (e) {
-    throw new Error('error delete');
+    throw customError.delete();
   }
 }
 
@@ -70,7 +71,7 @@ async function updateRecord(recordId, firstName, lastName, date, data) {
   try {
     const record = await BdayModel.findOne({ where: { id: recordId } });
 
-    if (!record) throw new Error('record not found');
+    if (!record) throw customError.notFound();
 
     const updatedRecord = await record.update({
       firstName,
@@ -88,7 +89,7 @@ async function updateRecord(recordId, firstName, lastName, date, data) {
       month: dateUtil.getMonthName(date),
     };
   } catch (e) {
-    throw new Error('error update');
+    throw customError.update();
   }
 }
 
@@ -96,7 +97,7 @@ async function getById(id, args = {}) {
   try {
     return await BdayModel.findOne({ where: { id }, ...args });
   } catch (e) {
-    throw new Error('error query by id');
+    throw customError.query();
   }
 }
 
