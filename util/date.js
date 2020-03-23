@@ -19,7 +19,12 @@ function utcToDay(utc) {
   return (utc && +moment(utc).format('DD')) || null;
 }
 
+function getTime() {
+  return moment().valueOf();
+}
+
 module.exports = {
   getMonthName,
   utcToDay,
+  getTime,
 };

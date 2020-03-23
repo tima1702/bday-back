@@ -1,6 +1,7 @@
 const models = require('../models');
 const BdaysService = require('./bdays');
 const deepFind = require('../util/deepFind');
+const date = require('../util/date');
 
 const TemplateModel = models.Template;
 
@@ -14,7 +15,7 @@ function changeTemplateVariable(text, userData) {
     if (findItems && findItems.length) {
       findItems.forEach((item) => {
         const path = item.replace('<!!', '', -1).replace('!!>', '', -1);
-        copy = copy.replace(item, deepFind(userData, path) || '', -1).trim();
+        copy = copy.replace(item, deepFind(userData || {}, path) || '', -1).trim();
       });
     }
   }
@@ -22,7 +23,7 @@ function changeTemplateVariable(text, userData) {
 }
 
 function templateBlock(block, userData, timeStart, timeout) {
-  if (new Date().getTime() - timeStart >= timeout) throw new Error('timeout');
+  if (date.getTime() - timeStart >= timeout) throw new Error('timeout');
 
   const modifiedBlock = {};
 
@@ -32,7 +33,7 @@ function templateBlock(block, userData, timeStart, timeout) {
     switch (typeof itemInBlock) {
       case 'string':
         if (blockKey === 'text') {
-          modifiedBlock[blockKey] = changeTemplateVariable(itemInBlock, userData);
+          modifiedBlock[blockKey] = changeTemplateVariable(itemInBlock, userData || {});
           return false;
         }
         modifiedBlock[blockKey] = itemInBlock;
@@ -41,9 +42,9 @@ function templateBlock(block, userData, timeStart, timeout) {
       case 'object':
         if (Array.isArray(itemInBlock)) {
           if (!modifiedBlock[blockKey] || !Array.isArray(modifiedBlock[blockKey])) modifiedBlock[blockKey] = [];
-          itemInBlock.some((nestedBlock) =>
-            modifiedBlock[blockKey].push(templateBlock(nestedBlock, userData, timeStart, timeout)),
-          );
+          itemInBlock.some((nestedBlock) => {
+            modifiedBlock[blockKey].push(templateBlock(nestedBlock, userData, timeStart, timeout));
+          });
         } else {
           modifiedBlock[blockKey] = templateBlock(itemInBlock, userData, timeStart, timeout);
         }
@@ -156,4 +157,6 @@ module.exports = {
   updateRecord,
   getAll,
   deleteRecord,
+  templateBlock,
+  changeTemplateVariable,
 };

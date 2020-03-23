@@ -70,14 +70,14 @@ async function updateRecord(recordId, firstName, lastName, date, data) {
   try {
     const record = await BdayModel.findOne({ where: { id: recordId } });
 
+    if (!record) throw new Error('record not found');
+
     const updatedRecord = await record.update({
       firstName,
       lastName,
       data,
       date: date * 1000,
     });
-
-    if (!record) throw new Error('record not found');
 
     return {
       id: updatedRecord.dataValues.id,
