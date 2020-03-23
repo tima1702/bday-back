@@ -20,6 +20,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         unique: true,
+        references: {
+          model: 'Bdays',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       createdAt: {
         allowNull: false,

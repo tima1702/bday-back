@@ -5,7 +5,15 @@ module.exports = (sequelize, DataTypes) => {
     {
       date: DataTypes.DATEONLY,
       isCongratulate: DataTypes.BOOLEAN,
-      bdayId: DataTypes.INTEGER,
+      bdayId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'Bdays',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      },
     },
     {},
   );
