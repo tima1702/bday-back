@@ -1,5 +1,4 @@
 const responseSuccess = require('../util/responseSuccess');
-const responseError = require('../util/responseError');
 const TemplatesService = require('../services/templates');
 const customError = require('../util/customError');
 
@@ -46,7 +45,7 @@ class Templates {
   async get(req, res) {
     const record = await TemplatesService.getByIdBasicData(req.params.templateId);
 
-    if (!record) throw responseError.query('not found');
+    if (!record) throw customError.query('not found');
 
     const response = responseSuccess.query(record);
     res.status(response.status).json(response.body);

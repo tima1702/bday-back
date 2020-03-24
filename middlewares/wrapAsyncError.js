@@ -12,7 +12,7 @@ const errorMessages = {
 };
 
 function printUndefined(res, err) {
-  const undefinedError = responseError.undefinedError({ err: String(err) });
+  const undefinedError = responseError.undefinedError({ err: typeof err === 'string' ? err : JSON.stringify(err) });
   res.status(undefinedError.status).json(undefinedError.body);
 }
 
