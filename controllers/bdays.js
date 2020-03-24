@@ -25,10 +25,11 @@ class Bdays {
   }
 
   async deleteRecord(req, res) {
-    const { id } = req.params;
-    const data = await BdaysService.deleteRecord(id);
+    const countRecords = await BdaysService.deleteRecord(req.params.id);
 
-    const response = responseSuccess.delete(data);
+    if (!countRecords) throw customError.delete();
+
+    const response = responseSuccess.delete(countRecords);
     res.status(response.status).json(response.body);
   }
 
@@ -43,19 +44,24 @@ class Bdays {
       data,
     );
 
+    if (!row) throw customError.update();
+
     const response = responseSuccess.update(row);
     res.status(response.status).json(response.body);
   }
 
   async create(req, res) {
     const { firstName, lastName, date, data } = req.body;
-    const row = await BdaysService.create(
+    const record = await BdaysService.create(
       text.compositeLetterUpperCase(firstName),
       text.compositeLetterUpperCase(lastName),
       date,
       data,
     );
-    const reponseData = { ...row, day: dateUtil.utcToDay(row.date) };
+
+    if (!record) throw customError.create();
+
+    const reponseData = { ...record, day: dateUtil.utcToDay(record.date) };
     delete reponseData.date;
 
     const response = responseSuccess.created(reponseData);
