@@ -1,57 +1,41 @@
 const statusCodes = require('./statusCodes');
 
-/**
- *
- *
- * @param {Object} data
- * @returns
- */
-function buildbody(data = {}) {
-  const body = {
-    data,
-  };
+class ResponseSuccess {
+  created(data = {}) {
+    return {
+      status: statusCodes.CREATED,
+      body: {
+        data,
+      },
+    };
+  }
 
-  return body;
+  query(data = {}) {
+    return {
+      status: statusCodes.SUCCESS,
+      body: {
+        data,
+      },
+    };
+  }
+
+  delete(data = {}) {
+    return {
+      status: statusCodes.SUCCESS,
+      body: {
+        data,
+      },
+    };
+  }
+
+  update(data = {}) {
+    return {
+      status: statusCodes.SUCCESS,
+      body: {
+        data,
+      },
+    };
+  }
 }
 
-/**
- * Success created
- *
- * @param {Object} data
- * @returns
- */
-function created(data) {
-  return { status: statusCodes.CREATED, body: buildbody(data) };
-}
-
-/**
- * Success query
- *
- * @param {Object} data
- * @returns
- */
-function query(data) {
-  return { status: statusCodes.SUCCESS, body: buildbody(data) };
-}
-
-/**
- * Success delete
- *
- * @param {Object} data
- * @returns
- */
-function deleteRecord(data) {
-  return { status: statusCodes.SUCCESS, body: buildbody(data) };
-}
-
-/**
- * Success update
- *
- * @param {Object} data
- * @returns
- */
-function updateRecord(data) {
-  return { status: statusCodes.SUCCESS, body: buildbody(data) };
-}
-
-module.exports = { created, query, deleteRecord, updateRecord };
+module.exports = new ResponseSuccess();

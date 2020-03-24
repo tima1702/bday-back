@@ -15,14 +15,14 @@ class Templates {
     const { title, text, blocks, attachments } = req.body;
     const row = await TemplatesService.updateRecord(templateId, title, text, blocks, attachments || []);
 
-    const response = responseSuccess.updateRecord(row);
+    const response = responseSuccess.update(row);
     res.status(response.status).json(response.body);
   }
 
   async deleteRecord(req, res) {
     const data = await TemplatesService.deleteRecord(req.params.templateId);
 
-    const response = responseSuccess.deleteRecord(data);
+    const response = responseSuccess.delete(data);
     res.status(response.status).json(response.body);
   }
 

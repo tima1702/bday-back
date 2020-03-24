@@ -4,8 +4,8 @@ const responseError = require('../util/responseError');
 const errorMessages = {
   [JSON.parse(customError.create().message).type]: responseError.create,
   [JSON.parse(customError.query().message).type]: responseError.query,
-  [JSON.parse(customError.delete().message).type]: responseError.deleteRecord,
-  [JSON.parse(customError.update().message).type]: responseError.updateRecord,
+  [JSON.parse(customError.delete().message).type]: responseError.delete,
+  [JSON.parse(customError.update().message).type]: responseError.update,
   [JSON.parse(customError.timeout().message).type]: responseError.timeout,
   [JSON.parse(customError.notMofify().message).type]: responseError.notModify,
   [JSON.parse(customError.notFound().message).type]: responseError.notFound,

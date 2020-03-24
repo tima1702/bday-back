@@ -15,7 +15,7 @@ class Bdays {
     const { id } = req.params;
     const data = await BdaysService.deleteRecord(id);
 
-    const response = responseSuccess.deleteRecord(data);
+    const response = responseSuccess.delete(data);
     res.status(response.status).json(response.body);
   }
 
@@ -30,7 +30,7 @@ class Bdays {
       data,
     );
 
-    const response = responseSuccess.updateRecord(row);
+    const response = responseSuccess.update(row);
     res.status(response.status).json(response.body);
   }
 

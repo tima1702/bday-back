@@ -66,229 +66,67 @@ const errorList = {
   },
 };
 
-/**
- *
- *
- * @param {Number} code
- * @param {String} message
- * @param {Object} data
- * @returns
- */
-function buildbody({ code, message }, data = {}) {
-  const body = {
-    code,
-    message,
-    data: {},
-  };
-
-  if (isDev && data) body.data = data;
-
-  return body;
-}
-
-/**
- * Body validation error
- *
- * @param {Object} [data={}]
- * @returns
- */
-function bodyValidation(data = {}) {
-  const error = errorList.bodyValidation;
+function buildResponse({ code, message, status }, data) {
   return {
-    status: error.status,
+    status: status,
     body: {
-      err: buildbody(error, data),
+      err: {
+        code,
+        message,
+        data: isDev && data ? data : {},
+      },
     },
   };
 }
 
-/**
- * Query validation error
- *
- * @param {Object} [data={}]
- * @returns
- */
-function queryValidation(data = {}) {
-  const error = errorList.queryValidation;
-  return {
-    status: error.status,
-    body: {
-      err: buildbody(error, data),
-    },
-  };
+class ResponseError {
+  bodyValidation(data = {}) {
+    return buildResponse(errorList.bodyValidation, data);
+  }
+
+  queryValidation(data = {}) {
+    return buildResponse(errorList.queryValidation, data);
+  }
+
+  paramsValidation(data = {}) {
+    return buildResponse(errorList.paramsValidation, data);
+  }
+
+  save(data = {}) {
+    return buildResponse(errorList.save, data);
+  }
+
+  create(data = {}) {
+    return buildResponse(errorList.create, data);
+  }
+
+  query(data = {}) {
+    return buildResponse(errorList.query, data);
+  }
+
+  delete(data = {}) {
+    return buildResponse(errorList.deleteRecord, data);
+  }
+
+  update(data = {}) {
+    return buildResponse(errorList.updateRecord, data);
+  }
+
+  timeout(data = {}) {
+    return buildResponse(errorList.timeout, data);
+  }
+
+  notFound(data = {}) {
+    return buildResponse(errorList.notFound, data);
+  }
+
+  notModify(data = {}) {
+    return buildResponse(errorList.notModify, data);
+  }
+
+  undefinedError(data = {}) {
+    return buildResponse(errorList.undefinedError, data);
+  }
 }
 
-/**
- * Params validation error
- *
- * @param {Object} [data={}]
- * @returns
- */
-function paramsValidation(data = {}) {
-  const error = errorList.paramsValidation;
-  return {
-    status: error.status,
-    body: {
-      err: buildbody(error, data),
-    },
-  };
-}
-
-/**
- * Error save
- *
- * @param {Object} [data={}]
- * @returns
- */
-function save(data = {}) {
-  const error = errorList.save;
-  return {
-    status: error.status,
-    body: {
-      err: buildbody(error, data),
-    },
-  };
-}
-
-/**
- * Error create
- *
- * @param {Object} [data={}]
- * @returns
- */
-function create(data = {}) {
-  const error = errorList.create;
-  return {
-    status: error.status,
-    body: {
-      err: buildbody(error, data),
-    },
-  };
-}
-
-/**
- * Error query
- *
- * @param {Object} [data={}]
- * @returns
- */
-function query(data = {}) {
-  const error = errorList.query;
-  return {
-    status: error.status,
-    body: {
-      err: buildbody(error, data),
-    },
-  };
-}
-
-/**
- * Error delete
- *
- * @param {Object} [data={}]
- * @returns
- */
-function deleteRecord(data = {}) {
-  const error = errorList.deleteRecord;
-  return {
-    status: error.status,
-    body: {
-      err: buildbody(error, data),
-    },
-  };
-}
-
-/**
- * Error update
- *
- * @param {Object} [data={}]
- * @returns
- */
-function updateRecord(data = {}) {
-  const error = errorList.updateRecord;
-  return {
-    status: error.status,
-    body: {
-      err: buildbody(error, data),
-    },
-  };
-}
-
-/**
- * Error timeout
- *
- * @param {Object} [data={}]
- * @returns
- */
-function timeout(data = {}) {
-  const error = errorList.timeout;
-  return {
-    status: error.status,
-    body: {
-      err: buildbody(error, data),
-    },
-  };
-}
-
-/**
- * Not found
- *
- * @param {Object} [data={}]
- * @returns
- */
-function notFound(data = {}) {
-  const error = errorList.notFound;
-  return {
-    status: error.status,
-    body: {
-      err: buildbody(error, data),
-    },
-  };
-}
-
-/**
- * Not modify
- *
- * @param {Object} [data={}]
- * @returns
- */
-function notModify(data = {}) {
-  const error = errorList.notModify;
-  return {
-    status: error.status,
-    body: {
-      err: buildbody(error, data),
-    },
-  };
-}
-
-/**
- * Undefined error
- *
- * @param {Object} [data={}]
- * @returns
- */
-function undefinedError(data = {}) {
-  const error = errorList.undefinedError;
-  return {
-    status: error.status,
-    body: {
-      err: buildbody(error, data),
-    },
-  };
-}
-
-module.exports = {
-  bodyValidation,
-  queryValidation,
-  paramsValidation,
-  save,
-  create,
-  query,
-  deleteRecord,
-  updateRecord,
-  timeout,
-  notFound,
-  notModify,
-  undefinedError,
-};
+module.exports = new ResponseError();
