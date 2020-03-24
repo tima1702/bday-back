@@ -11,6 +11,7 @@
 ```shell script
 docker-compose up --build
 ```
+**Для перевода в режим PRODUCTION заменить в Dockerfile "start:dev" на "start"**
 
 Для автоматического форматирования кода можно использовать команду:
 ```shell script

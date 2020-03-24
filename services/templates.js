@@ -116,6 +116,18 @@ async function getById(id, args = {}) {
   }
 }
 
+async function getByIdForMatchedTemplate(id) {
+  return getById(+id, {
+    attributes: ['title', 'text', 'blocks', 'attachments'],
+  });
+}
+
+async function getByIdBasicData(id) {
+  return getById(+id, {
+    attributes: ['title', 'text', 'blocks', 'attachments'],
+  });
+}
+
 async function getAll(args = {}) {
   try {
     return await TemplateModel.findAll({ ...args });
@@ -124,34 +136,33 @@ async function getAll(args = {}) {
   }
 }
 
+async function getAllList() {
+  return getById({
+    attributes: ['id', 'title'],
+  });
+}
+
 async function deleteRecord(recordId) {
   try {
     const result = await TemplateModel.destroy({ where: { id: recordId } });
-    if (result === 0) throw customError.notMofify();
+    if (!result) throw customError.notMofify();
   } catch (e) {
     throw customError.delete();
   }
 }
 
-function getMatched(templateId, bdayId) {
-  return new Promise((resolve, reject) => {
-    Promise.all([
-      BdaysService.getById(+bdayId, { attributes: ['firstName', 'lastName', 'data', 'date'] }),
-      getById(+templateId, {
-        attributes: ['title', 'text', 'blocks', 'attachments'],
-      }),
-    ])
-      .then(([user, template]) => {
-        if (!user || !template) reject(customError.query());
-        const newTemplate = { ...template.dataValues, blocks: [] };
-        // eslint-disable-next-line array-callback-return
-        template.dataValues.blocks.some((block) => {
-          newTemplate.blocks.push(templateBlock(block, user, new Date().getTime(), 3000));
-        });
-        resolve(newTemplate);
-      })
-      .catch((e) => reject(e));
+async function getMatched(templateId, bdayId) {
+  const templateRecord = await getByIdForMatchedTemplate(templateId);
+  if (!templateRecord) throw customError.query('not found template');
+
+  const bdayRecord = await BdaysService.getByIdForMatchedTemplate(bdayId);
+  if (!bdayRecord) throw customError.query('not found bday');
+
+  const newTemplate = { ...templateRecord.dataValues, blocks: [] };
+  templateRecord.dataValues.blocks.forEach((block) => {
+    newTemplate.blocks.push(templateBlock(block, bdayRecord, new Date().getTime(), 3000));
   });
+  return newTemplate;
 }
 
 module.exports = {
@@ -163,4 +174,7 @@ module.exports = {
   deleteRecord,
   templateBlock,
   changeTemplateVariable,
+  getByIdForMatchedTemplate,
+  getByIdBasicData,
+  getAllList,
 };

@@ -101,10 +101,15 @@ async function getById(id, args = {}) {
   }
 }
 
+async function getByIdForMatchedTemplate(id) {
+  return getById(+id, { attributes: ['firstName', 'lastName', 'data', 'date'] });
+}
+
 module.exports = {
   create,
   getAll,
   deleteRecord,
   updateRecord,
   getById,
+  getByIdForMatchedTemplate,
 };

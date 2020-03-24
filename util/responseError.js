@@ -1,4 +1,7 @@
 const statusCodes = require('./statusCodes');
+require('dotenv');
+
+const isDev = process.env.NODE_ENV !== 'production';
 
 const errorList = {
   bodyValidation: {
@@ -75,9 +78,10 @@ function buildbody({ code, message }, data = {}) {
   const body = {
     code,
     message,
+    data: {},
   };
 
-  if (data) body.data = data;
+  if (isDev && data) body.data = data;
 
   return body;
 }
@@ -265,7 +269,7 @@ function notModify(data = {}) {
  * @returns
  */
 function undefinedError(data = {}) {
-  const error = errorList.notModify;
+  const error = errorList.undefinedError;
   return {
     status: error.status,
     body: {

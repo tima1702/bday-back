@@ -20,35 +20,28 @@ class Templates {
   }
 
   async deleteRecord(req, res) {
-    const { templateId } = req.params;
-    const data = await TemplatesService.deleteRecord(templateId);
+    const data = await TemplatesService.deleteRecord(req.params.templateId);
 
     const response = responseSuccess.deleteRecord(data);
     res.status(response.status).json(response.body);
   }
 
   async getMatched(req, res) {
-    const { templateId, bdayId } = req.params;
-    const template = await TemplatesService.getMatched(templateId, bdayId);
+    const template = await TemplatesService.getMatched(req.params.templateId, req.params.bdayId);
 
     const response = responseSuccess.query(template);
     res.status(response.status).json(response.body);
   }
 
   async get(req, res) {
-    const { templateId } = req.params;
-    const row = await TemplatesService.getById(+templateId, {
-      attributes: ['title', 'text', 'blocks', 'attachments'],
-    });
+    const row = await TemplatesService.getByIdBasicData(req.params.templateId);
 
     const response = responseSuccess.query(row);
     res.status(response.status).json(response.body);
   }
 
   async getAll(req, res) {
-    const row = await TemplatesService.getAll({
-      attributes: ['id', 'title'],
-    });
+    const row = await TemplatesService.getAllList();
 
     const response = responseSuccess.query(row);
     res.status(response.status).json(response.body);

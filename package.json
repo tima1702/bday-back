@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --collect-coverage",
     "test:watch": "jest --collect-coverage --watchAll",
-    "start": "node server.js",
+    "start": "NODE_ENV=production node server.js",
     "start:dev": "node-dev server.js",
     "prettier": "prettier --write **/**.js",
     "db:migrate": "sequelize-cli db:migrate",
