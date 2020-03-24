@@ -24,8 +24,8 @@ class Bdays {
     const { firstName, lastName, date, data } = req.body;
     const row = await BdaysService.updateRecord(
       id,
-      text.firstLetterUpperCase(firstName),
-      text.firstLetterUpperCase(lastName),
+      text.compositeLetterUpperCase(firstName),
+      text.compositeLetterUpperCase(lastName),
       date,
       data,
     );
@@ -37,8 +37,8 @@ class Bdays {
   async create(req, res) {
     const { firstName, lastName, date, data } = req.body;
     const row = await BdaysService.create(
-      text.firstLetterUpperCase(firstName),
-      text.firstLetterUpperCase(lastName),
+      text.compositeLetterUpperCase(firstName),
+      text.compositeLetterUpperCase(lastName),
       date,
       data,
     );

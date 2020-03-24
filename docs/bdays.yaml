@@ -174,11 +174,15 @@ CreateUpdateStructRequest:
     firstName:
       type: string
       description: |
-        min: **2** max: **15**
+        min: **2** max: **30**
+
+        a-Z, а-Я, -
     lastName:
       type: string
       description: |
-        min: **2** max: **15**
+        min: **2** max: **30**
+
+        a-Z, а-Я, -
     data:
       type: object
     date:

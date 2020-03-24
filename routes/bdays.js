@@ -6,12 +6,12 @@ const wrapAsync = require('../util/wrapAsync');
 
 const body = Joi.object({
   firstName: Joi.string()
-    .pattern(new RegExp('^[a-zA-Zа-яА-Я]{2,15}$'))
-    .rule({ message: '"{{#label}}" must be a valid firstName' })
+    .pattern(new RegExp('^[a-zA-Zа-яА-Я-]{2,30}$'))
+    .rule({ message: '"{{#label}}" must be a valid firstName ^[a-zA-Zа-яА-Я-]$ len 2-30' })
     .required(),
   lastName: Joi.string()
-    .pattern(new RegExp('^[a-zA-Zа-яА-Я]{2,15}$'))
-    .rule({ message: '"{{#label}}" must be a valid lastName' })
+    .pattern(new RegExp('^[a-zA-Zа-яА-Я-]{2,30}$'))
+    .rule({ message: '"{{#label}}" must be a valid lastName ^[a-zA-Zа-яА-Я-]$ len 2-30' })
     .required(),
   data: Joi.object(),
   date: Joi.number()
