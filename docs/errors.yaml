@@ -32,3 +32,8 @@ Description: |
   `8` - Error update **(500)**
 
   `9` - Error timeout **(500)**
+
+
+  ***Список строчных форматов времени:***
+
+  `DEFAULT_FORMAT` - DD/MM/YYYY

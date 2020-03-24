@@ -147,8 +147,7 @@ One:
                       type: object
                     date:
                       type: string
-                      description: Формат DD/MM/YYYY
-
+                      description: Формат DEFAULT_FORMAT
 
   delete:
     tags:
