@@ -108,6 +108,48 @@ More:
               $ref: "bdays.yaml#/CreateUpdateStructResponse"
 
 One:
+  get:
+    tags:
+      - Bdays
+    summary: Получить информацию о дне рождения
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Идентификатор записи
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - data
+              properties:
+                data:
+                  type: object
+                  required:
+                    - firstName
+                    - lastName
+                    - fullName
+                    - data
+                    - date
+                  properties:
+                    firstName:
+                      type: string
+                    lastName:
+                      type: string
+                    fullName:
+                      type: string
+                    data:
+                      type: object
+                    date:
+                      type: string
+                      description: Формат DD/MM/YYYY
+
+
   delete:
     tags:
       - Bdays

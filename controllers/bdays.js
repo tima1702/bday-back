@@ -2,12 +2,25 @@ const responseSuccess = require('../util/responseSuccess');
 const dateUtil = require('../util/date');
 const text = require('../util/text');
 const BdaysService = require('../services/bdays');
+const customError = require('../util/customError');
 
 class Bdays {
   async getAll(req, res) {
     const data = await BdaysService.getAll();
 
     const response = responseSuccess.query(data);
+    res.status(response.status).json(response.body);
+  }
+
+  async getById(req, res) {
+    const record = await BdaysService.getByIdBasicData(req.params.id);
+
+    if (!record) throw customError.query('not found');
+
+    const response = responseSuccess.query({
+      ...record.dataValues,
+      date: dateUtil.getDateStringDefaultFormat(record.dataValues.date),
+    });
     res.status(response.status).json(response.body);
   }
 

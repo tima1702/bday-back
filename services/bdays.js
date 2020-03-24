@@ -101,11 +101,16 @@ async function getById(id, args = {}) {
   }
 }
 
+async function getByIdBasicData(id) {
+  return getById(+id, { attributes: ['firstName', 'lastName', 'data', 'date'] });
+}
+
 async function getByIdForMatchedTemplate(id) {
   return getById(+id, { attributes: ['firstName', 'lastName', 'data', 'date'] });
 }
 
 module.exports = {
+  getByIdBasicData,
   create,
   getAll,
   deleteRecord,

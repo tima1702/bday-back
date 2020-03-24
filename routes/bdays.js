@@ -31,6 +31,7 @@ const id = Joi.object({
 });
 
 router.get('/', wrapAsyncError(BdayController.getAll));
+router.get('/:id', validate.params(id), wrapAsyncError(BdayController.getById));
 router.post('/', validate.body(body), wrapAsyncError(BdayController.create));
 router.delete('/:id', validate.params(id), wrapAsyncError(BdayController.deleteRecord));
 router.put('/:id', validate.params(id), validate.body(body), wrapAsyncError(BdayController.updateRecord));
