@@ -8,7 +8,7 @@ const userData = {
   },
 };
 
-describe('getMatchedTemplate', () => {
+describe('API getMatchedTemplate', () => {
   test('check template', async (done) => {
     const template = {
       title: 'TITLE',
@@ -26,7 +26,6 @@ describe('getMatchedTemplate', () => {
 
     const templateResp = await callLocalApi.post('/templates', template);
     const bdaysResp = await callLocalApi.post('/bdays', { ...userData, date: 638199918 });
-
     const templateMatchResp = await callLocalApi.get(
       `/templates/${templateResp.data.data.id}/${bdaysResp.data.data.id}`,
     );

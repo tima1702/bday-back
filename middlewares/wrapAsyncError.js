@@ -17,7 +17,7 @@ function printUndefined(res, err) {
 }
 
 // eslint-disable-next-line
-async function checkError(err, req, res, next) {
+async function checkError(err, res) {
   if (err.name === 'CustomError') {
     const errMessage = JSON.parse(err.message);
 
@@ -32,4 +32,10 @@ async function checkError(err, req, res, next) {
   printUndefined(res, err);
 }
 
-module.exports = checkError;
+function wrapAsyncError(fn) {
+  return (req, res, next) => {
+    fn(req, res, next).catch((e) => checkError(e, res));
+  };
+}
+
+module.exports = wrapAsyncError;

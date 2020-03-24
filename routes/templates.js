@@ -2,7 +2,7 @@ const router = require('express').Router();
 const Joi = require('@hapi/joi');
 const validate = require('../middlewares/validate');
 const TemplateController = require('../controllers/templates');
-const wrapAsync = require('../util/wrapAsync');
+const wrapAsyncError = require('../middlewares/wrapAsyncError');
 
 const body = Joi.object({
   title: Joi.string().required(),
@@ -30,16 +30,16 @@ const getParams = Joi.object({
     .required(),
 });
 
-router.post('/', validate.body(body), wrapAsync(TemplateController.create));
-
-router.get('/', wrapAsync(TemplateController.getAll));
-
-router.get('/:templateId/:bdayId', validate.params(getParamsMatched), wrapAsync(TemplateController.getMatched));
-
-router.delete('/:templateId', validate.params(getParams), wrapAsync(TemplateController.deleteRecord));
-
-router.put('/:templateId', validate.params(getParams), validate.body(body), wrapAsync(TemplateController.updateRecord));
-
-router.get('/:templateId', validate.params(getParams), wrapAsync(TemplateController.get));
+router.post('/', validate.body(body), wrapAsyncError(TemplateController.create));
+router.get('/', wrapAsyncError(TemplateController.getAll));
+router.get('/:templateId/:bdayId', validate.params(getParamsMatched), wrapAsyncError(TemplateController.getMatched));
+router.delete('/:templateId', validate.params(getParams), wrapAsyncError(TemplateController.deleteRecord));
+router.put(
+  '/:templateId',
+  validate.params(getParams),
+  validate.body(body),
+  wrapAsyncError(TemplateController.updateRecord),
+);
+router.get('/:templateId', validate.params(getParams), wrapAsyncError(TemplateController.get));
 
 module.exports = router;

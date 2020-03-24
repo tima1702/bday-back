@@ -1,49 +1,61 @@
 const responseSuccess = require('../util/responseSuccess');
+const responseError = require('../util/responseError');
 const TemplatesService = require('../services/templates');
+const customError = require('../util/customError');
 
 class Templates {
   async create(req, res) {
     const { title, text, blocks, attachments } = req.body;
-    const row = await TemplatesService.create(title, text, blocks, attachments || []);
+    const record = await TemplatesService.create(title, text, blocks, attachments || []);
 
-    const response = responseSuccess.created(row);
+    if (!record) throw customError.create();
+
+    const response = responseSuccess.created(record);
     res.status(response.status).json(response.body);
   }
 
   async updateRecord(req, res) {
     const { templateId } = req.params;
     const { title, text, blocks, attachments } = req.body;
-    const row = await TemplatesService.updateRecord(templateId, title, text, blocks, attachments || []);
+    const record = await TemplatesService.updateRecord(templateId, title, text, blocks, attachments || []);
 
-    const response = responseSuccess.update(row);
+    if (!record) throw customError.update();
+
+    const response = responseSuccess.update(record);
     res.status(response.status).json(response.body);
   }
 
   async deleteRecord(req, res) {
-    const data = await TemplatesService.deleteRecord(req.params.templateId);
+    const countRecords = await TemplatesService.deleteRecord(req.params.templateId);
 
-    const response = responseSuccess.delete(data);
+    if (!countRecords) throw customError.delete();
+
+    const response = responseSuccess.delete();
     res.status(response.status).json(response.body);
   }
 
   async getMatched(req, res) {
-    const template = await TemplatesService.getMatched(req.params.templateId, req.params.bdayId);
+    const matchedTemplate = await TemplatesService.getMatched(req.params.templateId, req.params.bdayId);
 
-    const response = responseSuccess.query(template);
+    if (!matchedTemplate) throw customError.query('error build template');
+
+    const response = responseSuccess.query(matchedTemplate);
     res.status(response.status).json(response.body);
   }
 
   async get(req, res) {
-    const row = await TemplatesService.getByIdBasicData(req.params.templateId);
+    const record = await TemplatesService.getByIdBasicData(req.params.templateId);
 
-    const response = responseSuccess.query(row);
+    if (!record) throw responseError.query('not found');
+
+    const response = responseSuccess.query(record);
     res.status(response.status).json(response.body);
   }
 
   async getAll(req, res) {
-    const row = await TemplatesService.getAllList();
+    const records = await TemplatesService.getAllList();
 
-    const response = responseSuccess.query(row);
+    const response = responseSuccess.query(records);
     res.status(response.status).json(response.body);
   }
 }

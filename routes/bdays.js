@@ -2,7 +2,7 @@ const router = require('express').Router();
 const Joi = require('@hapi/joi');
 const validate = require('../middlewares/validate');
 const BdayController = require('../controllers/bdays');
-const wrapAsync = require('../util/wrapAsync');
+const wrapAsyncError = require('../middlewares/wrapAsyncError');
 
 const body = Joi.object({
   firstName: Joi.string()
@@ -30,9 +30,9 @@ const id = Joi.object({
     .required(),
 });
 
-router.get('/', wrapAsync(BdayController.getAll));
-router.post('/', validate.body(body), wrapAsync(BdayController.create));
-router.delete('/:id', validate.params(id), wrapAsync(BdayController.deleteRecord));
-router.put('/:id', validate.params(id), validate.body(body), wrapAsync(BdayController.updateRecord));
+router.get('/', wrapAsyncError(BdayController.getAll));
+router.post('/', validate.body(body), wrapAsyncError(BdayController.create));
+router.delete('/:id', validate.params(id), wrapAsyncError(BdayController.deleteRecord));
+router.put('/:id', validate.params(id), validate.body(body), wrapAsyncError(BdayController.updateRecord));
 
 module.exports = router;

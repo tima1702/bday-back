@@ -1,38 +1,38 @@
 const statusCodes = require('./statusCodes');
 
 class ResponseSuccess {
-  created(data = {}) {
+  created(arg = {}) {
     return {
       status: statusCodes.CREATED,
       body: {
-        data,
+        data: arg,
       },
     };
   }
 
-  query(data = {}) {
+  query(arg = {}) {
     return {
       status: statusCodes.SUCCESS,
       body: {
-        data,
+        data: arg,
       },
     };
   }
 
-  delete(data = {}) {
+  delete(arg = {}) {
     return {
       status: statusCodes.SUCCESS,
       body: {
-        data,
+        data: arg,
       },
     };
   }
 
-  update(data = {}) {
+  update(arg = {}) {
     return {
       status: statusCodes.SUCCESS,
       body: {
-        data,
+        data: arg,
       },
     };
   }
