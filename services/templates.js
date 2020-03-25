@@ -2,7 +2,7 @@ const models = require('../models');
 const BdaysService = require('./bdays');
 const deepFind = require('../util/deepFind');
 const date = require('../util/date');
-const customError = require('../util/customError');
+const CustomError = require('../util/customError');
 const asyncWrapper = require('../util/asyncWrapper');
 
 const TemplateModel = models.Template;
@@ -25,7 +25,7 @@ function changeTemplateVariable(text, userData) {
 }
 
 function templateBlock(block, userData, timeStart, timeout) {
-  if (date.getTime() - timeStart >= timeout) throw customError.timeout();
+  if (date.getTime() - timeStart >= timeout) throw new CustomError().timeout();
 
   const modifiedBlock = {};
 
@@ -71,7 +71,7 @@ async function create(title, text, blocks, attachments) {
       blocks,
       attachments,
     }),
-    customError.create(),
+    new CustomError().create(),
   );
 
   return {
@@ -84,9 +84,9 @@ async function create(title, text, blocks, attachments) {
 }
 
 async function updateRecord(recordId, title, text, blocks, attachments = []) {
-  const record = await asyncWrapper(TemplateModel.findOne({ where: { id: recordId } }), customError.query());
+  const record = await asyncWrapper(TemplateModel.findOne({ where: { id: recordId } }), new CustomError().query());
 
-  if (!record) throw customError.notFound();
+  if (!record) throw new CustomError().notFound();
 
   const updatedRecord = await asyncWrapper(
     record.update({
@@ -95,7 +95,7 @@ async function updateRecord(recordId, title, text, blocks, attachments = []) {
       blocks,
       attachments: attachments && attachments.length ? attachments : record.attachments,
     }),
-    customError.update(),
+    new CustomError().update(),
   );
 
   return {
@@ -108,9 +108,9 @@ async function updateRecord(recordId, title, text, blocks, attachments = []) {
 }
 
 async function getById(id, args = {}) {
-  const record = await asyncWrapper(TemplateModel.findOne({ where: { id }.id, ...args }), customError.query());
+  const record = await asyncWrapper(TemplateModel.findOne({ where: { id }.id, ...args }), new CustomError().query());
 
-  if (!record) throw customError.notFound();
+  if (!record) throw new CustomError().notFound();
 
   return record;
 }
@@ -128,7 +128,7 @@ async function getByIdBasicData(id) {
 }
 
 async function getAll(args = {}) {
-  return await asyncWrapper(TemplateModel.findAll({ ...args }), customError.query());
+  return await asyncWrapper(TemplateModel.findAll({ ...args }), new CustomError().query());
 }
 
 async function getAllList() {
@@ -138,17 +138,17 @@ async function getAllList() {
 }
 
 async function deleteRecord(recordId) {
-  const result = await asyncWrapper(TemplateModel.destroy({ where: { id: recordId } }), customError.delete());
-  if (!result) throw customError.notModify();
+  const result = await asyncWrapper(TemplateModel.destroy({ where: { id: recordId } }), new CustomError().delete());
+  if (!result) throw new CustomError().notModify();
   return result;
 }
 
 async function getMatched(templateId, bdayId) {
   const templateRecord = await getByIdForMatchedTemplate(templateId);
-  if (!templateRecord) throw customError.query('not found template');
+  if (!templateRecord) throw new CustomError().query('not found template');
 
   const bdayRecord = await BdaysService.getByIdForMatchedTemplate(bdayId);
-  if (!bdayRecord) throw customError.query('not found bday');
+  if (!bdayRecord) throw new CustomError().query('not found bday');
 
   const newTemplate = { ...templateRecord.dataValues, blocks: [] };
   templateRecord.dataValues.blocks.forEach((block) => {

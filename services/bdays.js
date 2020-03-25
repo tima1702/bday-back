@@ -1,7 +1,7 @@
 const models = require('../models');
 const dateUtil = require('../util/date');
 const asyncWrapper = require('../util/asyncWrapper');
-const customError = require('../util/customError');
+const CustomError = require('../util/customError');
 const sql = require('../sql');
 
 const BdayModel = models.Bday;
@@ -14,7 +14,7 @@ async function create(firstName, lastName, date, data) {
       date: date * 1000,
       data,
     }),
-    customError.create(),
+    new CustomError().create(),
   );
 
   return {
@@ -30,7 +30,7 @@ async function create(firstName, lastName, date, data) {
 async function getAll() {
   const months = await asyncWrapper(
     models.sequelize.query(sql.getListBdays, { type: models.Sequelize.QueryTypes.SELECT }),
-    customError.query(),
+    new CustomError().query(),
   );
   const newMonths = {};
 
@@ -42,17 +42,17 @@ async function getAll() {
 }
 
 async function deleteRecord(recordId) {
-  const result = await asyncWrapper(BdayModel.destroy({ where: { id: recordId } }), customError.delete());
+  const result = await asyncWrapper(BdayModel.destroy({ where: { id: recordId } }), new CustomError().delete());
 
-  if (!result) throw customError.notModify();
+  if (!result) throw new CustomError().notModify();
 
   return result;
 }
 
 async function updateRecord(recordId, firstName, lastName, date, data) {
-  const record = await asyncWrapper(BdayModel.findOne({ where: { id: recordId } }), customError.query());
+  const record = await asyncWrapper(BdayModel.findOne({ where: { id: recordId } }), new CustomError().query());
 
-  if (!record) throw customError.notFound();
+  if (!record) throw new CustomError().notFound();
 
   const updatedRecord = await asyncWrapper(
     record.update({
@@ -61,7 +61,7 @@ async function updateRecord(recordId, firstName, lastName, date, data) {
       data,
       date: date * 1000,
     }),
-    customError.update(),
+    new CustomError().update(),
   );
 
   return {
@@ -75,7 +75,7 @@ async function updateRecord(recordId, firstName, lastName, date, data) {
 }
 
 async function getById(id, args = {}) {
-  return await asyncWrapper(BdayModel.findOne({ where: { id }, ...args }), customError.query());
+  return await asyncWrapper(BdayModel.findOne({ where: { id }, ...args }), new CustomError().query());
 }
 
 async function getByIdBasicData(id) {

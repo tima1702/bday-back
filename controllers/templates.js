@@ -1,13 +1,13 @@
 const responseSuccess = require('../util/responseSuccess');
 const TemplatesService = require('../services/templates');
-const customError = require('../util/customError');
+const CustomError = require('../util/customError');
 
 class Templates {
   async create(req, res) {
     const { title, text, blocks, attachments } = req.body;
     const record = await TemplatesService.create(title, text, blocks, attachments || []);
 
-    if (!record) throw customError.create();
+    if (!record) throw new CustomError().create();
 
     responseSuccess.created(res, record);
   }
@@ -31,7 +31,7 @@ class Templates {
   async getMatched(req, res) {
     const matchedTemplate = await TemplatesService.getMatched(req.params.templateId, req.params.bdayId);
 
-    if (!matchedTemplate) throw customError.query('error build template');
+    if (!matchedTemplate) throw new CustomError().query('error build template');
 
     responseSuccess.query(res, matchedTemplate);
   }

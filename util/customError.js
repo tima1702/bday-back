@@ -1,17 +1,20 @@
-class CustomErrorExtends extends Error {
-  constructor(message) {
-    super(message);
-    this.name = 'CustomError';
-  }
-}
-
 function getError(type, str) {
   const obj = { type };
   if (str) obj.data = { details: [str] };
-  return new CustomErrorExtends(JSON.stringify(obj));
+  return new CustomError(JSON.stringify(obj));
 }
 
-class CustomError {
+class CustomError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = this.constructor.name;
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, this.constructor);
+    } else {
+      this.stack = new Error(message).stack;
+    }
+  }
+
   create(str) {
     return getError('error create', str);
   }
@@ -41,4 +44,4 @@ class CustomError {
   }
 }
 
-module.exports = new CustomError();
+module.exports = CustomError;

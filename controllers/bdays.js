@@ -2,7 +2,7 @@ const responseSuccess = require('../util/responseSuccess');
 const dateUtil = require('../util/date');
 const text = require('../util/text');
 const BdaysService = require('../services/bdays');
-const customError = require('../util/customError');
+const CustomError = require('../util/customError');
 
 class Bdays {
   async getAll(req, res) {
@@ -12,7 +12,7 @@ class Bdays {
   async getById(req, res) {
     const record = await BdaysService.getByIdBasicData(req.params.id);
 
-    if (!record) throw customError.query('not found');
+    if (!record) throw new CustomError().query('not found');
 
     responseSuccess.query(res, {
       ...record.dataValues,
@@ -51,7 +51,7 @@ class Bdays {
       data,
     );
 
-    if (!record) throw customError.create();
+    if (!record) throw new CustomError().create();
 
     const reponseData = { ...record, day: dateUtil.utcToDay(record.date) };
     delete reponseData.date;
