@@ -7,7 +7,7 @@ const errorMessages = {
   [JSON.parse(customError.delete().message).type]: responseError.delete,
   [JSON.parse(customError.update().message).type]: responseError.update,
   [JSON.parse(customError.timeout().message).type]: responseError.timeout,
-  [JSON.parse(customError.notMofify().message).type]: responseError.notModify,
+  [JSON.parse(customError.notModify().message).type]: responseError.notModify,
   [JSON.parse(customError.notFound().message).type]: responseError.notFound,
 };
 
@@ -32,10 +32,8 @@ async function checkError(err, res) {
   printUndefined(res, err);
 }
 
-function wrapAsyncError(fn) {
-  return (req, res, next) => {
-    fn(req, res, next).catch((e) => checkError(e, res));
-  };
-}
+const wrapAsyncError = (fn) => (req, res, next) => {
+  fn(req, res, next).catch((e) => checkError(e, res));
+};
 
 module.exports = wrapAsyncError;

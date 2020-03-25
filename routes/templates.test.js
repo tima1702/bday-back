@@ -51,7 +51,7 @@ describe('API check get 2 147 483 646', () => {
         throw new Error();
       })
       .catch((err) => {
-        expect(err.response.data.err.code).toBe(responseError.query().body.err.code);
+        expect(err.response.data.err.code).toBe(responseError.notFound().body.err.code);
         done();
       });
   });

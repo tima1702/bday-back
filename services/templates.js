@@ -3,6 +3,7 @@ const BdaysService = require('./bdays');
 const deepFind = require('../util/deepFind');
 const date = require('../util/date');
 const customError = require('../util/customError');
+const asyncWrapper = require('../util/asyncWrapper');
 
 const TemplateModel = models.Template;
 
@@ -63,57 +64,55 @@ function templateBlock(block, userData, timeStart, timeout) {
 }
 
 async function create(title, text, blocks, attachments) {
-  try {
-    const result = await TemplateModel.create({
+  const result = await asyncWrapper(
+    TemplateModel.create({
       title,
       text,
       blocks,
       attachments,
-    });
+    }),
+    customError.create(),
+  );
 
-    return {
-      id: result.id,
-      title: result.title,
-      text: result.text,
-      blocks: result.blocks,
-      attachments: result.attachments,
-    };
-  } catch (e) {
-    throw customError.create();
-  }
+  return {
+    id: result.id,
+    title: result.title,
+    text: result.text,
+    blocks: result.blocks,
+    attachments: result.attachments,
+  };
 }
 
 async function updateRecord(recordId, title, text, blocks, attachments = []) {
-  try {
-    const record = await TemplateModel.findOne({ where: { id: recordId } });
+  const record = await asyncWrapper(TemplateModel.findOne({ where: { id: recordId } }), customError.query());
 
-    const updatedRecord = await record.update({
+  if (!record) throw customError.notFound();
+
+  const updatedRecord = await asyncWrapper(
+    record.update({
       title,
       text,
       blocks,
       attachments: attachments && attachments.length ? attachments : record.attachments,
-    });
+    }),
+    customError.update(),
+  );
 
-    if (!record) throw customError.notFound();
-
-    return {
-      id: updatedRecord.dataValues.id,
-      title: updatedRecord.dataValues.title,
-      text: updatedRecord.dataValues.text,
-      blocks: updatedRecord.dataValues.blocks,
-      attachments: updatedRecord.dataValues.attachments,
-    };
-  } catch (e) {
-    throw customError.update();
-  }
+  return {
+    id: updatedRecord.dataValues.id,
+    title: updatedRecord.dataValues.title,
+    text: updatedRecord.dataValues.text,
+    blocks: updatedRecord.dataValues.blocks,
+    attachments: updatedRecord.dataValues.attachments,
+  };
 }
 
 async function getById(id, args = {}) {
-  try {
-    return await TemplateModel.findOne({ where: { id }.id, ...args });
-  } catch (e) {
-    throw customError.query();
-  }
+  const record = await asyncWrapper(TemplateModel.findOne({ where: { id }.id, ...args }), customError.query());
+
+  if (!record) throw customError.notFound();
+
+  return record;
 }
 
 async function getByIdForMatchedTemplate(id) {
@@ -129,11 +128,7 @@ async function getByIdBasicData(id) {
 }
 
 async function getAll(args = {}) {
-  try {
-    return await TemplateModel.findAll({ ...args });
-  } catch (e) {
-    throw customError.query();
-  }
+  return await asyncWrapper(TemplateModel.findAll({ ...args }), customError.query());
 }
 
 async function getAllList() {
@@ -143,12 +138,9 @@ async function getAllList() {
 }
 
 async function deleteRecord(recordId) {
-  try {
-    const result = await TemplateModel.destroy({ where: { id: recordId } });
-    if (!result) throw customError.notMofify();
-  } catch (e) {
-    throw customError.delete();
-  }
+  const result = await asyncWrapper(TemplateModel.destroy({ where: { id: recordId } }), customError.delete());
+  if (!result) throw customError.notModify();
+  return result;
 }
 
 async function getMatched(templateId, bdayId) {

@@ -33,10 +33,28 @@ function getDateStringDefaultFormat(date) {
   return (date && moment(date).format(DEFAULT_FORMAT)) || null;
 }
 
+function getListMonthName() {
+  return [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+}
+
 module.exports = {
   getMonthName,
   utcToDay,
   getTime,
   getDateStringDefaultFormat,
   dateToUTC,
+  getListMonthName,
 };

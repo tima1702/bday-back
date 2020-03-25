@@ -32,7 +32,7 @@ class CustomError {
     return getError('error timeout', str);
   }
 
-  notMofify(str) {
+  notModify(str) {
     return getError('not modify', str);
   }
 
