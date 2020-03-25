@@ -1,4 +1,4 @@
-const { sequelize,Sequelize } = require('../../models');
+const { sequelize, Sequelize } = require('../../models');
 const fs = require('fs');
 const path = require('path');
 
@@ -17,48 +17,64 @@ function checkBdays() {
 }
 
 function createProcedure(file) {
-  sequelize.query(fs.readFileSync(path.resolve(__dirname, file)).toString()).then(() => console.log(`Success created procedure ${file}!`))
-    .catch((e) => console.error(`Error created procedure ${file}!`, e));
+  return sequelize.query(fs.readFileSync(path.resolve(__dirname, file)).toString());
+}
+
+function checkExistsProcedure(procedureName) {
+  return new Promise((resolve, reject) => {
+    sequelize.query(
+        `
+                SELECT EXISTS(
+                               SELECT *
+                               FROM pg_catalog.pg_proc
+                                        JOIN pg_namespace ON pg_catalog.pg_proc.pronamespace = pg_namespace.oid
+                               WHERE proname = ?
+                           )
+      `,
+      {
+        replacements: [procedureName],
+        type: Sequelize.QueryTypes.SELECT,
+      },
+    ).then(records => {
+      let isExists = false;
+
+      records.forEach(record => {
+          if (!isExists) isExists = record.exists;
+        },
+      );
+
+      if (!isExists) resolve('not exists');
+
+      resolve('exists');
+    }).catch((e) => reject(`Error check: ${e}`));
+  });
+
 }
 
 function createAllIfNotExists() {
-  new Promise(() => {
-    listProcedure.forEach(procedure => {
+  return new Promise((resolve, reject) => {
+    Promise.all(listProcedure.map(procedure => {
       if (!procedure || !procedure.file || !procedure.name) {
         console.log('ERROR Read procedure data', procedure);
-        return;
+        return new Promise((resolve) => resolve());
       }
 
-      sequelize.query(
-          `
-        SELECT 
-          EXISTS (
-            SELECT 
-              * 
-            FROM 
-              pg_catalog.pg_proc 
-              JOIN pg_namespace ON pg_catalog.pg_proc.pronamespace = pg_namespace.oid 
-            WHERE 
-              proname = ?
-          )
-      `,
-        {
-          replacements: [procedure.name],
-          type: Sequelize.QueryTypes.SELECT,
-        },
-      ).then(records => {
-        let isExists = true;
-
-        records.forEach(record => {
-            if (!record.exists) isExists = false;
-          },
-        );
-
-        if (!isExists) {
-          console.log(`Start create procedure ${procedure.file}...`);
-          createProcedure(procedure.file);
-        }
-      }).catch((e) => console.error(`Error check exists procedure ${procedure.name}:`, e));
+      return new Promise((resolve1, reject1) => {
+        checkExistsProcedure(procedure.name).then((status) => {
+          if (status === 'not exists') {
+            console.log(`Start create procedure: ${procedure.file}`);
+            createProcedure(procedure.file).then(resolve1).catch(reject1);
+          } else {
+            resolve1();
+          }
+        }).catch(reject1);
+      });
+    })).then(() => {
+      console.log('All procedures are created!');
+      resolve();
+    }).catch((e) => {
+      console.error(`Error when creating procedures!: ${e}`);
+      reject(e);
     });
   });
 }
